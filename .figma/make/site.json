@@ -1,0 +1,15 @@
+{
+  "title": "AdepaPay — Buy Today, Pay in Easy Installments",
+  "description": "Buy today and pay in easy installments with AdepaPay. Shop trusted products from verified stores across Ghana with flexible hire-purchase payment plans.",
+  "language": "en",
+  "openGraph": {
+    "image": "https://adepapay.onrender.com/images/adepa_pay_logo.png"
+  },
+  "robots": {
+    "index": true
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

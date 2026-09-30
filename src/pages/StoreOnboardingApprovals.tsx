@@ -1,0 +1,69 @@
+import { useEffect, useMemo, useState } from "react"
+import { loadStoreOnboardingApplications, STORE_APPROVAL_EVENT, updateStoreOnboardingApplication, type StoreOnboardingApplication } from "../lib/storeOnboarding"
+
+const date = (value: string) => new Intl.DateTimeFormat("en-GH", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value))
+const primary = "rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-blue-700"
+const secondary = "rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50"
+const input = "mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500"
+
+function statusTone(status: string) {
+  if (status === "Approved") return "bg-emerald-50 text-emerald-700"
+  if (status === "Rejected") return "bg-red-50 text-red-700"
+  if (status === "Documents Required") return "bg-amber-50 text-amber-700"
+  return "bg-blue-50 text-blue-700"
+}
+
+export default function StoreOnboardingApprovalsPage() {
+  const [applications, setApplications] = useState(loadStoreOnboardingApplications)
+  const [query, setQuery] = useState("")
+  const [filter, setFilter] = useState("All")
+  const [selected, setSelected] = useState<StoreOnboardingApplication | null>(null)
+  useEffect(() => { const refresh = () => setApplications(loadStoreOnboardingApplications()); window.addEventListener(STORE_APPROVAL_EVENT, refresh); return () => window.removeEventListener(STORE_APPROVAL_EVENT, refresh) }, [])
+  const visible = useMemo(() => applications.filter((application) => {
+    const matches = `${application.reference} ${application.storeName} ${application.owner} ${application.category} ${application.region}`.toLowerCase().includes(query.toLowerCase())
+    return matches && (filter === "All" || application.status === filter)
+  }), [applications, filter, query])
+  const metrics = [["Total applications", applications.length], ["Pending review", applications.filter((item) => ["New", "Under Review"].includes(item.status)).length], ["Documents required", applications.filter((item) => item.status === "Documents Required").length], ["Approved", applications.filter((item) => item.status === "Approved").length], ["Rejected", applications.filter((item) => item.status === "Rejected").length]]
+  return <div className="space-y-6"><div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><h2 className="text-2xl font-bold">Store Approvals</h2><p className="mt-1 text-sm text-slate-500">Review partner-store onboarding applications, verify documents, request corrections, approve, or reject.</p></div><button className={secondary}>Export applications</button></div>
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">{metrics.map(([label, value]) => <div key={label} className="rounded-2xl border border-slate-200 bg-white p-5"><div className="text-sm text-slate-500">{label}</div><div className="mt-2 text-2xl font-black">{value}</div></div>)}</div>
+    <div className="rounded-2xl border border-slate-200 bg-white p-4"><div className="flex flex-col gap-3 lg:flex-row"><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search store, owner, reference, category, or region" className="min-w-0 flex-1 rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500" /><div className="flex gap-2 overflow-x-auto">{["All", "New", "Under Review", "Documents Required", "Approved", "Rejected"].map((item) => <button key={item} onClick={() => setFilter(item)} className={`whitespace-nowrap rounded-xl px-4 py-3 text-xs font-bold ${filter === item ? "bg-blue-600 text-white" : "bg-slate-50 text-slate-600"}`}>{item}</button>)}</div></div></div>
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white"><div className="overflow-x-auto"><table className="w-full min-w-[1120px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase text-slate-500"><tr>{["Application", "Store", "Owner", "Category", "Region", "Progress", "Risk", "Status", "Reviewer", "Actions"].map((label) => <th key={label} className="px-5 py-4">{label}</th>)}</tr></thead><tbody>{visible.map((application) => <tr key={application.reference} className="border-t border-slate-100"><td className="px-5 py-4"><div className="font-bold">{application.reference}</div><div className="text-xs text-slate-400">{date(application.submittedAt)}</div></td><td className="px-5 py-4 font-bold">{application.storeName}</td><td className="px-5 py-4">{application.owner}</td><td className="px-5 py-4">{application.category}</td><td className="px-5 py-4">{application.region}</td><td className="px-5 py-4"><div className="h-2 w-24 overflow-hidden rounded-full bg-slate-100"><div className="h-full bg-blue-500" style={{ width: `${application.progress}%` }} /></div><div className="mt-1 text-xs">{application.progress}%</div></td><td className="px-5 py-4"><span className={`rounded-full px-3 py-1 text-xs font-bold ${application.risk === "Low Risk" ? "bg-emerald-50 text-emerald-700" : application.risk === "High Risk" ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-700"}`}>{application.risk}</span></td><td className="px-5 py-4"><span className={`rounded-full px-3 py-1 text-xs font-bold ${statusTone(application.status)}`}>{application.status}</span></td><td className="px-5 py-4">{application.reviewer}</td><td className="px-5 py-4"><button onClick={() => setSelected(application)} className="font-bold text-blue-600">Review & decide</button></td></tr>)}</tbody></table>{!visible.length && <div className="p-12 text-center text-sm text-slate-500">No store applications match this view.</div>}</div></div>
+    {selected && <StoreReviewDrawer key={`${selected.reference}-${selected.status}`} application={applications.find((item) => item.reference === selected.reference) ?? selected} onClose={() => setSelected(null)} />}
+  </div>
+}
+
+function StoreReviewDrawer({ application, onClose }: { application: StoreOnboardingApplication; onClose: () => void }) {
+  const [mode, setMode] = useState<"approve" | "documents" | "reject">(application.status === "Documents Required" ? "documents" : "approve")
+  const [documents, setDocuments] = useState(application.requestedDocuments.join("\n"))
+  const [adminNote, setAdminNote] = useState(application.adminNote)
+  const [storeMessage, setStoreMessage] = useState(application.storeMessage)
+  const [confirmed, setConfirmed] = useState(false)
+  const [error, setError] = useState("")
+  const submit = () => {
+    const requested = documents.split(/[,\n]/).map((item) => item.trim()).filter(Boolean)
+    if (!confirmed) { setError("Confirm that you reviewed the application and supporting documents."); return }
+    if (!adminNote.trim()) { setError("Add an internal Admin note."); return }
+    if ((mode === "documents" || mode === "reject") && !storeMessage.trim()) { setError("Add a message that will be visible to the store."); return }
+    if (mode === "documents" && !requested.length) { setError("List at least one required document."); return }
+    const now = new Date().toISOString()
+    updateStoreOnboardingApplication(application.reference, (current) => ({
+      ...current,
+      status: mode === "approve" ? "Approved" : mode === "documents" ? "Documents Required" : "Rejected",
+      progress: mode === "approve" ? 100 : current.progress,
+      requestedDocuments: mode === "documents" ? requested : [],
+      adminNote: adminNote.trim(),
+      storeMessage: storeMessage.trim() || "Your store application has been approved.",
+      documents: mode === "documents" ? [...current.documents.filter((item) => item.status !== "Requested"), ...requested.map((name) => ({ name, status: "Requested" as const }))] : mode === "approve" ? current.documents.map((item) => ({ ...item, status: "Verified" as const })) : current.documents,
+      history: [...current.history, { at: now, actor: "Admin", action: mode === "approve" ? "Store approved" : mode === "documents" ? "Further documents requested" : "Store application rejected", note: adminNote.trim() }],
+    }))
+    onClose()
+  }
+  return <div className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-sm"><button className="absolute inset-0" onClick={onClose} aria-label="Close review" /><aside className="absolute right-0 top-0 h-full w-full max-w-4xl overflow-y-auto bg-white p-6 shadow-2xl sm:p-8"><div className="flex items-start justify-between gap-4"><div><div className="flex flex-wrap items-center gap-2"><h3 className="text-2xl font-bold">Store Approval Review</h3><span className={`rounded-full px-3 py-1 text-xs font-bold ${statusTone(application.status)}`}>{application.status}</span></div><p className="mt-1 text-sm text-slate-500">{application.reference} · {application.storeName} · Reviewer {application.reviewer}</p></div><button onClick={onClose} className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-xl">×</button></div>
+    <section className="mt-6 rounded-2xl border border-slate-200 p-5"><h4 className="font-bold">Business and owner information</h4><div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[["Registered name", application.registeredName], ["Public store name", application.storeName], ["Business type", application.businessType], ["Registration number", application.registrationNumber], ["Tax ID", application.taxId], ["Category", application.category], ["Owner", application.owner], ["Email", application.email], ["Phone", application.phone], ["Location", application.location], ["GhanaPost GPS", application.gps], ["Region", application.region]].map(([label, value]) => <div key={label}><div className="text-xs font-bold text-slate-400">{label}</div><div className="mt-1 text-sm font-semibold">{value}</div></div>)}</div></section>
+    <div className="mt-6 grid gap-5 lg:grid-cols-2"><section className="rounded-2xl border border-slate-200 p-5"><h4 className="font-bold">Verification documents</h4><div className="mt-3 space-y-2">{application.documents.map((document, index) => <div key={`${document.name}-${index}`} className="flex items-center justify-between rounded-xl bg-slate-50 p-3 text-sm"><span>{document.name}</span><span className={`text-xs font-bold ${document.status === "Verified" ? "text-emerald-600" : document.status === "Requested" ? "text-red-600" : "text-amber-600"}`}>{document.status}</span></div>)}</div></section><section className="rounded-2xl border border-slate-200 p-5"><h4 className="font-bold">Audit history</h4><div className="mt-3 space-y-3">{[...application.history].reverse().map((item, index) => <div key={`${item.at}-${index}`} className="border-l-2 border-blue-200 pl-3"><div className="text-sm font-bold">{item.action}</div><div className="text-xs text-slate-400">{item.actor} · {date(item.at)}</div><p className="mt-1 text-xs leading-5 text-slate-600">{item.note}</p></div>)}</div></section></div>
+    <section className="mt-6 rounded-2xl border border-blue-200 bg-blue-50/40 p-5"><h4 className="font-bold">Admin decision</h4><div className="mt-4 grid gap-3 sm:grid-cols-3"><button onClick={() => { setMode("approve"); setError("") }} className={`rounded-2xl border p-4 text-left ${mode === "approve" ? "border-emerald-500 bg-emerald-50 text-emerald-800" : "border-slate-200 bg-white"}`}><b>Approve Store</b><div className="mt-1 text-xs">Activate the verified store account.</div></button><button onClick={() => { setMode("documents"); setError("") }} className={`rounded-2xl border p-4 text-left ${mode === "documents" ? "border-amber-500 bg-amber-50 text-amber-800" : "border-slate-200 bg-white"}`}><b>Request Documents</b><div className="mt-1 text-xs">Return the application for evidence.</div></button><button onClick={() => { setMode("reject"); setError("") }} className={`rounded-2xl border p-4 text-left ${mode === "reject" ? "border-red-500 bg-red-50 text-red-800" : "border-slate-200 bg-white"}`}><b>Reject Application</b><div className="mt-1 text-xs">Decline with a recorded reason.</div></button></div>
+    {mode === "documents" && <label className="mt-5 block"><span className="text-xs font-bold">Required documents *</span><textarea value={documents} onChange={(event) => setDocuments(event.target.value)} rows={3} placeholder="Updated proof of address&#10;Clear business certificate" className={input} /></label>}
+    <div className="mt-5 grid gap-4 lg:grid-cols-2"><label><span className="text-xs font-bold">Internal Admin note *</span><textarea value={adminNote} onChange={(event) => setAdminNote(event.target.value)} rows={4} placeholder="Internal compliance and decision notes" className={input} /></label><label><span className="text-xs font-bold">Message visible to store {mode === "approve" ? "(optional)" : "*"}</span><textarea value={storeMessage} onChange={(event) => setStoreMessage(event.target.value)} rows={4} placeholder="Explain the decision or what the store must provide" className={input} /></label></div>
+    <label className="mt-5 flex items-start gap-3 rounded-xl bg-white p-4 text-sm"><input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} className="mt-1 accent-blue-600" /><span>I confirm that I reviewed the store information, verification documents, risk indicators, and decision details.</span></label>{error && <p className="mt-3 text-xs font-bold text-red-600">{error}</p>}<div className="mt-5 flex flex-wrap justify-end gap-3"><button onClick={onClose} className={secondary}>Cancel</button><button onClick={submit} className={`${primary} ${mode === "approve" ? "!bg-emerald-600" : mode === "reject" ? "!bg-red-600" : "!bg-amber-600"}`}>{mode === "approve" ? "Approve Store" : mode === "documents" ? "Send Document Request" : "Reject Store"}</button></div></section>
+  </aside></div>
+}
