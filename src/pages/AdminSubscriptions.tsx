@@ -1,107 +1,47 @@
-import { useMemo, useState } from "react"
-import { formatCurrency } from "../lib/localization"
+import { useEffect, useState } from "react"
+import { billingRequest, billingButton as button, billingDate as date, price, type Plan, type Order } from "../lib/billingApi"
 
-type SubscriptionStatus = "Active" | "Expiring Soon" | "Expired" | "Past Due"
-type PaymentStatus = "Paid" | "Pending" | "Failed"
-
-type StoreSubscription = {
-  id: string
-  storeId: string
-  store: string
-  initials: string
-  contact: string
-  packageName: "Starter" | "Growth" | "Enterprise"
-  billingCycle: "Monthly" | "Quarterly" | "Annual"
-  amount: number
-  status: SubscriptionStatus
-  paymentStatus: PaymentStatus
-  paymentMethod: string
-  paymentReference: string
-  subscribedAt: string
-  lastPaymentAt: string
-  expiresAt: string
-  autoRenew: boolean
-}
-
-const SUBSCRIPTIONS: StoreSubscription[] = [
-  { id: "SUB-2026-00941", storeId: "BPS-000184", store: "CYTECH Gadgets", initials: "CG", contact: "hello@cytechgadgets.com", packageName: "Enterprise", billingCycle: "Annual", amount: 7200, status: "Active", paymentStatus: "Paid", paymentMethod: "MTN Mobile Money", paymentReference: "MOMO-58204193", subscribedAt: "2026-01-15", lastPaymentAt: "2026-01-15", expiresAt: "2027-01-14", autoRenew: true },
-  { id: "SUB-2026-00940", storeId: "BPS-000207", store: "Adepa Home", initials: "AH", contact: "billing@adepahome.com", packageName: "Growth", billingCycle: "Monthly", amount: 420, status: "Expiring Soon", paymentStatus: "Paid", paymentMethod: "Visa •••• 4082", paymentReference: "CARD-92018411", subscribedAt: "2026-02-04", lastPaymentAt: "2026-09-04", expiresAt: "2026-10-03", autoRenew: false },
-  { id: "SUB-2026-00939", storeId: "BPS-000263", store: "PhoneHub Ghana", initials: "PG", contact: "accounts@phonehub.gh", packageName: "Growth", billingCycle: "Quarterly", amount: 1150, status: "Active", paymentStatus: "Paid", paymentMethod: "Bank transfer", paymentReference: "GCB-TRX-883104", subscribedAt: "2026-04-01", lastPaymentAt: "2026-07-01", expiresAt: "2026-09-30", autoRenew: true },
-  { id: "SUB-2026-00938", storeId: "BPS-000318", store: "Kumasi Furniture Co.", initials: "KF", contact: "admin@kumasifurniture.com", packageName: "Starter", billingCycle: "Monthly", amount: 180, status: "Past Due", paymentStatus: "Failed", paymentMethod: "Telecel Cash", paymentReference: "TLC-FAILED-2918", subscribedAt: "2026-05-12", lastPaymentAt: "2026-08-12", expiresAt: "2026-09-11", autoRenew: true },
-  { id: "SUB-2026-00937", storeId: "BPS-000329", store: "Glow Beauty Store", initials: "GB", contact: "hello@glowbeauty.gh", packageName: "Starter", billingCycle: "Annual", amount: 1800, status: "Active", paymentStatus: "Paid", paymentMethod: "AirtelTigo Money", paymentReference: "ATM-66301845", subscribedAt: "2026-03-20", lastPaymentAt: "2026-03-20", expiresAt: "2027-03-19", autoRenew: false },
-  { id: "SUB-2026-00936", storeId: "BPS-000351", store: "AutoDrive Motors", initials: "AM", contact: "finance@autodrive.gh", packageName: "Enterprise", billingCycle: "Quarterly", amount: 1950, status: "Expiring Soon", paymentStatus: "Pending", paymentMethod: "Bank transfer", paymentReference: "PENDING-BT-2109", subscribedAt: "2026-03-30", lastPaymentAt: "2026-06-30", expiresAt: "2026-09-29", autoRenew: false },
-  { id: "SUB-2026-00935", storeId: "BPS-000366", store: "Northern Appliances", initials: "NA", contact: "northern.appliances@email.com", packageName: "Growth", billingCycle: "Monthly", amount: 420, status: "Expired", paymentStatus: "Failed", paymentMethod: "MTN Mobile Money", paymentReference: "MOMO-FAILED-6012", subscribedAt: "2026-02-18", lastPaymentAt: "2026-08-18", expiresAt: "2026-09-17", autoRenew: false },
-  { id: "SUB-2026-00934", storeId: "BPS-000401", store: "Campus Tech Point", initials: "CT", contact: "campustechpoint@gmail.com", packageName: "Starter", billingCycle: "Monthly", amount: 180, status: "Active", paymentStatus: "Paid", paymentMethod: "Visa •••• 7741", paymentReference: "CARD-33592018", subscribedAt: "2026-09-22", lastPaymentAt: "2026-09-22", expiresAt: "2026-10-21", autoRenew: true },
-]
-
-const tone = {
-  Active: "bg-emerald-50 text-emerald-700",
-  "Expiring Soon": "bg-amber-50 text-amber-700",
-  Expired: "bg-slate-100 text-slate-600",
-  "Past Due": "bg-red-50 text-red-700",
-  Paid: "bg-emerald-50 text-emerald-700",
-  Pending: "bg-amber-50 text-amber-700",
-  Failed: "bg-red-50 text-red-700",
-} satisfies Record<SubscriptionStatus | PaymentStatus, string>
-
-const shortDate = (date: string) => new Date(`${date}T00:00:00`).toLocaleDateString("en-GH", { day: "2-digit", month: "short", year: "numeric" })
-const monthlyValue = (subscription: StoreSubscription) => subscription.billingCycle === "Annual" ? subscription.amount / 12 : subscription.billingCycle === "Quarterly" ? subscription.amount / 3 : subscription.amount
-
-export default function AdminSubscriptionsPage() {
-  const [query, setQuery] = useState("")
-  const [status, setStatus] = useState("All")
-  const [packageFilter, setPackageFilter] = useState("All")
-  const [paymentMethod, setPaymentMethod] = useState("All")
-  const [selected, setSelected] = useState<StoreSubscription | null>(null)
-  const filtered = useMemo(() => SUBSCRIPTIONS.filter((subscription) => {
-    const search = `${subscription.store} ${subscription.storeId} ${subscription.id} ${subscription.paymentReference}`.toLowerCase()
-    return (!query || search.includes(query.toLowerCase())) && (status === "All" || subscription.status === status) && (packageFilter === "All" || subscription.packageName === packageFilter) && (paymentMethod === "All" || subscription.paymentMethod.includes(paymentMethod))
-  }), [query, status, packageFilter, paymentMethod])
-  const active = SUBSCRIPTIONS.filter((item) => item.status === "Active" || item.status === "Expiring Soon")
-  const monthlyRevenue = active.reduce((total, item) => total + monthlyValue(item), 0)
-
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div><h2 className="text-2xl font-bold text-slate-950">Store Subscriptions</h2><p className="mt-1 text-sm text-slate-500">Monitor store packages, billing, payment methods, renewals, and expiration dates.</p></div>
-        <div className="flex gap-2"><button className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700">Export CSV</button><button className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white">Manage Packages</button></div>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        {[
-          ["Total subscriptions", String(SUBSCRIPTIONS.length), "All store packages", "bg-blue-500"],
-          ["Active", String(active.length), "Including expiring soon", "bg-emerald-500"],
-          ["Monthly recurring revenue", formatCurrency(monthlyRevenue), "Normalized billing value", "bg-violet-500"],
-          ["Expiring soon", String(SUBSCRIPTIONS.filter((item) => item.status === "Expiring Soon").length), "Requires renewal follow-up", "bg-amber-500"],
-          ["Payment issues", String(SUBSCRIPTIONS.filter((item) => item.paymentStatus === "Failed").length), "Failed or past due", "bg-red-500"],
-        ].map(([label, value, detail, dotClass]) => <div key={label} className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><span className="text-sm font-semibold text-slate-500">{label}</span><span className={`h-2.5 w-2.5 rounded-full ${dotClass}`} /></div><div className="mt-3 text-2xl font-black text-slate-950">{value}</div><div className="mt-1 text-xs text-slate-400">{detail}</div></div>)}
-      </div>
-
-      <div className="rounded-[24px] border border-slate-200 bg-white shadow-sm">
-        <div className="grid gap-3 border-b border-slate-100 p-4 lg:grid-cols-[1fr_180px_160px_200px]">
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search store, subscription or payment reference" className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500" />
-          <select value={status} onChange={(event) => setStatus(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm"><option>All</option><option>Active</option><option>Expiring Soon</option><option>Past Due</option><option>Expired</option></select>
-          <select value={packageFilter} onChange={(event) => setPackageFilter(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm"><option>All</option><option>Starter</option><option>Growth</option><option>Enterprise</option></select>
-          <select value={paymentMethod} onChange={(event) => setPaymentMethod(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm"><option>All</option><option>Mobile Money</option><option>Visa</option><option>Bank transfer</option><option>Telecel Cash</option><option>AirtelTigo Money</option></select>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1180px] text-left text-sm">
-            <thead className="bg-slate-50 text-xs uppercase text-slate-500"><tr>{["Store", "Package", "Payment", "Mode of payment", "Subscription date", "Expiration date", "Status", "Action"].map((label) => <th key={label} className="px-5 py-4">{label}</th>)}</tr></thead>
-            <tbody>{filtered.map((subscription) => <tr key={subscription.id} className="border-t border-slate-100 hover:bg-slate-50/70"><td className="px-5 py-4"><div className="flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 font-black text-blue-700">{subscription.initials}</div><div><div className="font-bold text-slate-950">{subscription.store}</div><div className="text-xs text-slate-400">{subscription.storeId} · {subscription.id}</div></div></div></td><td className="px-5 py-4"><div className="font-bold">{subscription.packageName}</div><div className="text-xs text-slate-500">{subscription.billingCycle}</div></td><td className="px-5 py-4"><div className="font-bold">{formatCurrency(subscription.amount)}</div><span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold ${tone[subscription.paymentStatus]}`}>{subscription.paymentStatus}</span></td><td className="px-5 py-4"><div className="font-semibold">{subscription.paymentMethod}</div><div className="text-xs text-slate-400">{subscription.paymentReference}</div></td><td className="px-5 py-4">{shortDate(subscription.subscribedAt)}</td><td className="px-5 py-4"><div className={subscription.status === "Expiring Soon" || subscription.status === "Past Due" ? "font-bold text-amber-700" : ""}>{shortDate(subscription.expiresAt)}</div><div className="text-xs text-slate-400">Auto-renew {subscription.autoRenew ? "on" : "off"}</div></td><td className="px-5 py-4"><span className={`rounded-full px-3 py-1 text-xs font-bold ${tone[subscription.status]}`}>{subscription.status}</span></td><td className="px-5 py-4"><button onClick={() => setSelected(subscription)} className="font-bold text-blue-600">View details</button></td></tr>)}</tbody>
-          </table>
-          {filtered.length === 0 && <div className="p-12 text-center text-sm text-slate-500">No subscriptions match the selected filters.</div>}
-        </div>
-        <div className="flex items-center justify-between border-t border-slate-100 px-5 py-4 text-xs text-slate-500"><span>Showing {filtered.length} of {SUBSCRIPTIONS.length} subscriptions</span><span>Last updated: just now</span></div>
-      </div>
-      {selected && <SubscriptionDetails subscription={selected} onClose={() => setSelected(null)} />}
-    </div>
-  )
-}
-
-function SubscriptionDetails({ subscription, onClose }: { subscription: StoreSubscription; onClose: () => void }) {
-  const payments = [
-    { date: subscription.lastPaymentAt, amount: subscription.amount, status: subscription.paymentStatus, reference: subscription.paymentReference },
-    { date: subscription.subscribedAt, amount: subscription.amount, status: "Paid" as PaymentStatus, reference: `INITIAL-${subscription.id.slice(-5)}` },
-  ]
-  return <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"><button className="absolute inset-0" onClick={onClose} aria-label="Close subscription details" /><div className="relative max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-[28px] bg-white p-6 shadow-2xl sm:p-8"><div className="flex items-start justify-between"><div className="flex items-center gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 font-black text-blue-700">{subscription.initials}</div><div><h3 className="text-xl font-bold">{subscription.store}</h3><p className="text-xs text-slate-500">{subscription.storeId} · {subscription.contact}</p></div></div><button onClick={onClose} className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-xl text-slate-500">×</button></div><div className="mt-6 rounded-[22px] bg-slate-950 p-5 text-white"><div className="flex flex-wrap items-center justify-between gap-3"><div><div className="text-xs font-bold uppercase tracking-wide text-slate-400">Current package</div><div className="mt-1 text-2xl font-black">{subscription.packageName}</div></div><span className={`rounded-full px-3 py-1 text-xs font-bold ${tone[subscription.status]}`}>{subscription.status}</span></div><div className="mt-4 grid gap-3 sm:grid-cols-3"><div><div className="text-xs text-slate-400">Billing</div><div className="mt-1 font-bold">{subscription.billingCycle}</div></div><div><div className="text-xs text-slate-400">Amount</div><div className="mt-1 font-bold">{formatCurrency(subscription.amount)}</div></div><div><div className="text-xs text-slate-400">Auto-renewal</div><div className="mt-1 font-bold">{subscription.autoRenew ? "Enabled" : "Disabled"}</div></div></div></div><div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[["Subscribed", shortDate(subscription.subscribedAt)], ["Last payment", shortDate(subscription.lastPaymentAt)], ["Expires", shortDate(subscription.expiresAt)], ["Payment method", subscription.paymentMethod]].map(([label, value]) => <div key={label} className="rounded-2xl bg-slate-50 p-4"><div className="text-xs font-semibold text-slate-400">{label}</div><div className="mt-2 text-sm font-bold">{value}</div></div>)}</div><div className="mt-7"><h4 className="font-bold">Payment history</h4><div className="mt-3 overflow-hidden rounded-2xl border border-slate-200"><table className="w-full text-left text-sm"><thead className="bg-slate-50 text-xs uppercase text-slate-500"><tr><th className="px-4 py-3">Date</th><th className="px-4 py-3">Reference</th><th className="px-4 py-3">Amount</th><th className="px-4 py-3">Status</th></tr></thead><tbody>{payments.map((payment) => <tr key={payment.reference} className="border-t border-slate-100"><td className="px-4 py-3">{shortDate(payment.date)}</td><td className="px-4 py-3 font-mono text-xs">{payment.reference}</td><td className="px-4 py-3 font-bold">{formatCurrency(payment.amount)}</td><td className="px-4 py-3"><span className={`rounded-full px-2 py-1 text-xs font-bold ${tone[payment.status]}`}>{payment.status}</span></td></tr>)}</tbody></table></div></div><div className="mt-6 flex flex-wrap justify-end gap-3"><button className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700">Send renewal reminder</button><button className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white">View store account</button></div></div></div>
+type Store = { id: string; name: string; email: string; status: string; active: boolean; paidUntil: string | null; plan: string | null }
+type Report = { plans: Plan[]; stores: Store[]; orders: Order[]; configured: boolean; mode: string; paidRevenue: number }
+const input = "mt-2 w-full rounded-xl border border-slate-300 p-3"
+export default function AdminSubscriptionsPage({ initialPlan = "", onRecordChange }: { initialPlan?: string; onRecordChange?: (record: string) => void }) {
+  const [data, setData] = useState<Report | null>(null), [error, setError] = useState(""), [reload, setReload] = useState(0), [loading, setLoading] = useState(true)
+  const [tab, setTab] = useState("Stores"), [query, setQuery] = useState(""), [page, setPage] = useState(1), [status, setStatus] = useState("All")
+  const [editing, setEditing] = useState<Partial<Plan> | null>(null), [name, setName] = useState(""), [amount, setAmount] = useState(""), [days, setDays] = useState("30"), [enabled, setEnabled] = useState(false), [busy, setBusy] = useState(false), [formError, setFormError] = useState("")
+  useEffect(() => { let active = true; setLoading(true); setError(""); billingRequest('admin/subscriptions').then(value => { if (active) setData(value) }).catch(e => { if (active) { setData(null); setError(e.message) } }).finally(() => { if (active) setLoading(false) }); return () => { active = false } }, [reload])
+  const edit = (plan?: Plan) => { setEditing(plan || {}); setName(plan?.name || ""); setAmount(plan ? String(plan.amount_minor / 100) : ""); setDays(String(plan?.duration_days || 30)); setEnabled(plan?.enabled || false); setFormError("") }
+  const closePlan = () => { setEditing(null); onRecordChange?.("") }
+  useEffect(() => {
+    if (!initialPlan) { setEditing(null); return }
+    if (!data) return
+    const plan = data.plans.find(row => row.id === initialPlan)
+    if (plan) { setTab("Plans"); edit(plan) }
+    else setError("This subscription plan is no longer available. Refresh the plans list.")
+  }, [initialPlan, data])
+  const save = async () => {
+    setBusy(true); setFormError("")
+    try {
+      if (!/^\d+(\.\d{1,2})?$/.test(amount)) throw new Error("Enter a price with up to two decimal places.")
+      await billingRequest('admin/subscriptions', { ...editing, name, amount_minor: Math.round(Number(amount) * 100), duration_days: Number(days), enabled })
+      closePlan(); setReload(v => v + 1)
+    } catch (e) { setFormError(e instanceof Error ? e.message : 'Unable to save plan.') } finally { setBusy(false) }
+  }
+  const stores = (data?.stores || []).filter(s => `${s.name} ${s.email}`.toLowerCase().includes(query.toLowerCase()) && (status === 'All' || (status === 'Paid' ? s.active : !s.active)))
+  const orders = (data?.orders || []).slice().reverse().filter(o => `${o.reference} ${o.plan_name} ${data?.stores.find(s => s.id === o.store_id)?.name || ''}`.toLowerCase().includes(query.toLowerCase()))
+  const count = tab === 'Stores' ? stores.length : orders.length, current = Math.min(page, Math.max(1, Math.ceil(count / 20)))
+  return <div className="space-y-6">
+    <header className="flex flex-wrap items-start justify-between gap-4"><div><h1 className="text-2xl font-bold">Store subscriptions</h1><p className="mt-2 text-sm text-slate-500">Paid access, subscription plans and verified Paystack payments.</p></div><div className="flex gap-2"><button className={button} disabled={loading} onClick={() => setReload(v => v + 1)}>Refresh</button><button className={`${button} !bg-blue-600 text-white`} onClick={() => edit()}>Create plan</button></div></header>
+    {error && <p role="alert" className="rounded-xl bg-red-50 p-4 text-red-700">{error}</p>}
+    {loading ? <p role="status">Loading subscriptions...</p> : data && <>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{[["Paid stores", data.stores.filter(s => s.active && s.status !== 'Deleted').length], ["Stores without paid access", data.stores.filter(s => !s.active && s.status === 'Active').length], ["Live payments received", price(Math.round(data.paidRevenue * 100))], ["Published plans", data.plans.filter(p => p.enabled).length]].map(([label, value]) => <section key={String(label)} className="rounded-2xl border bg-white p-5"><p className="text-sm text-slate-500">{label}</p><p className="mt-2 text-2xl font-bold">{value}</p></section>)}</div>
+      <p className="rounded-xl bg-blue-50 p-4 text-sm text-blue-900">{data.configured ? `Paystack ${data.mode} mode.` : 'Paystack key is not configured.'} Plans use prepaid terms with manual renewal. Access starts only after a payment is verified. Test payments are excluded from live revenue.</p>
+      <nav className="flex flex-wrap gap-2" aria-label="Subscription sections">{['Stores', 'Plans', 'Payments'].map(value => <button key={value} className={`${button} ${tab === value ? '!bg-blue-600 text-white' : ''}`} onClick={() => { setTab(value); setPage(1); setQuery('') }}>{value}</button>)}</nav>
+      {tab === 'Plans' ? <div className="grid gap-4 md:grid-cols-3">{data.plans.map(plan => <section key={plan.id} className="rounded-2xl border bg-white p-6"><p className="text-xs font-semibold uppercase text-slate-500">{plan.enabled ? 'Published' : 'Unpublished'}</p><h2 className="mt-3 text-xl font-bold">{plan.name}</h2><p className="mt-4 text-2xl font-bold">{price(plan.amount_minor)}</p><p className="mt-1 text-sm text-slate-500">{plan.duration_days} days</p><button className={`${button} mt-5`} onClick={() => { edit(plan); onRecordChange?.(plan.id) }}>Edit plan</button></section>)}{!data.plans.length && <p className="rounded-xl border bg-white p-5">Create and publish a priced plan to allow stores to subscribe.</p>}</div> : <>
+        <div className="flex flex-wrap gap-3"><input aria-label="Search subscriptions" className="flex-1 rounded-xl border p-3" placeholder={tab === 'Stores' ? 'Search store or email' : 'Search store, plan or reference'} value={query} onChange={e => { setQuery(e.target.value); setPage(1) }} />{tab === 'Stores' && <select aria-label="Filter subscription status" className="rounded-xl border p-3" value={status} onChange={e => { setStatus(e.target.value); setPage(1) }}>{['All','Paid','Unpaid / expired'].map(value => <option key={value}>{value}</option>)}</select>}</div>
+        <div className="overflow-x-auto rounded-2xl border bg-white"><table className="w-full text-left text-sm"><thead className="bg-slate-50"><tr>{(tab === 'Stores' ? ['Store','Plan','Paid until','Subscription','Store status','Action'] : ['Store','Reference','Plan','Amount','Status','Mode','Paid on']).map(h => <th key={h} className="p-4">{h}</th>)}</tr></thead><tbody>{tab === 'Stores' ? stores.slice((current-1)*20,current*20).map(s => <tr key={s.id} className="border-t"><td className="p-4 font-semibold">{s.name}<p className="mt-1 text-xs font-normal text-slate-500">{s.email}</p></td><td className="p-4">{s.plan || 'None'}</td><td className="p-4">{date(s.paidUntil)}</td><td className="p-4">{s.active ? 'Paid' : s.paidUntil ? 'Expired' : 'Not subscribed'}</td><td className="p-4">{s.status}</td><td className="p-4"><button className={button} onClick={() => { window.location.hash = `admin-store/${s.id}` }}>View store</button></td></tr>) : orders.slice((current-1)*20,current*20).map(o => <tr key={o.reference} className="border-t"><td className="p-4">{data.stores.find(s => s.id === o.store_id)?.name || o.store_id}</td><td className="max-w-48 break-all p-4">{o.reference}</td><td className="p-4">{o.plan_name}</td><td className="p-4">{price(o.amount_minor)}</td><td className="p-4">{o.status}</td><td className="p-4">{o.environment}</td><td className="p-4">{date(o.paid_at)}</td></tr>)}</tbody></table>{!count && <p className="p-8 text-center text-slate-500">No matching records.</p>}</div>
+        <div className="flex items-center justify-between text-sm"><p>{count} records - Page {current}</p><div className="flex gap-2"><button className={button} disabled={current <= 1} onClick={() => setPage(current-1)}>Previous</button><button className={button} disabled={current*20 >= count} onClick={() => setPage(current+1)}>Next</button></div></div>
+      </>}
+    </>}
+    {editing && <div className="fixed inset-0 z-[100] grid place-items-center bg-slate-950/60 p-4"><form onSubmit={e => { e.preventDefault(); void save() }} role="dialog" aria-modal="true" aria-labelledby="plan-title" className="max-h-[90vh] w-full max-w-lg space-y-4 overflow-y-auto rounded-2xl bg-white p-6"><h2 id="plan-title" className="text-xl font-bold">{editing.id ? 'Edit subscription plan' : 'Create subscription plan'}</h2><p className="text-sm text-slate-500">Changes apply to new checkouts. Existing paid terms and initialized payment amounts are preserved.</p><label className="block text-sm font-semibold">Plan name<input required maxLength={100} className={input} value={name} onChange={e => setName(e.target.value)} /></label><label className="block text-sm font-semibold">Price (GHS)<input required type="number" min="1" max="1000000" step="0.01" className={input} value={amount} onChange={e => setAmount(e.target.value)} /></label><label className="block text-sm font-semibold">Duration (days)<input required type="number" min="1" max="366" step="1" className={input} value={days} onChange={e => setDays(e.target.value)} /></label><label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} />Publish for store checkout</label>{formError && <p role="alert" className="text-sm text-red-700">{formError}</p>}<div className="flex justify-end gap-2"><button type="button" className={button} disabled={busy} onClick={closePlan}>Cancel</button><button className={`${button} !bg-blue-600 text-white`} disabled={busy}>{busy ? 'Saving...' : 'Save plan'}</button></div></form></div>}
+  </div>
 }

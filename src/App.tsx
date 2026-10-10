@@ -1,279 +1,28 @@
-import { useState, useEffect, useRef, useCallback } from "react"
+import FeaturedListings from './pages/FeaturedListings'
+import PublicInformation from './pages/PublicInformation'
+import { authRequest, AuthError, type AuthUser } from './lib/auth'
+import { useState, useEffect, useCallback } from "react"
 import BrowseStores from "./pages/BrowseStores"
 import StoreDetails from "./pages/StoreDetails"
 import BrowseProducts from "./pages/BrowseProducts"
 import Register from "./pages/Register"
 import Login from "./pages/Login"
-import OTPVerification from "./pages/OTPVerification"
-import ForgotPassword from "./pages/ForgotPassword"
 import CustomerPortal from "./pages/CustomerPortal"
+import StoreBilling from "./pages/StoreBilling"
 import StoreRegistration from "./pages/StoreRegistration"
-import { formatCurrency } from "./lib/localization"
 import PublicNavbar from "./components/PublicNavbar"
 import Services from "./pages/ServicesRedesign"
-import FieldAgentPortal from "./pages/FieldAgentPortal"
+import FieldAgentPortal from "./pages/AgentAccount"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-interface Store {
-  id: number
-  name: string
-  category: string
-  location: string
-  rating: number
-  products: number
-  image: string
-  logo: string
-  verified: boolean
-}
-
-interface Product {
-  id: number
-  name: string
-  store: string
-  image: string
-  price: number
-  deposit: number
-  monthly: number
-  duration: number
-  inStock: boolean
-  verified: boolean
-}
-
-// ─── Data ─────────────────────────────────────────────────────────────────────
-const STORES: Store[] = [
-  {
-    id: 1,
-    name: "TechWorld Electronics",
-    category: "Electronics",
-    location: "Accra, Ghana",
-    rating: 4.9,
-    products: 248,
-    image:
-      "https://images.unsplash.com/photo-1491933382434-500287f9b54b?w=600&h=240&fit=crop&auto=format",
-    logo: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=80&h=80&fit=crop&auto=format",
-    verified: true,
-  },
-  {
-    id: 2,
-    name: "HomeStyle Furniture",
-    category: "Furniture & Decor",
-    location: "Kumasi, Ghana",
-    rating: 4.7,
-    products: 182,
-    image:
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=240&fit=crop&auto=format",
-    logo: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=80&h=80&fit=crop&auto=format",
-    verified: true,
-  },
-  {
-    id: 3,
-    name: "AutoDrive Motors",
-    category: "Automobiles",
-    location: "Tema, Greater Accra",
-    rating: 4.8,
-    products: 94,
-    image:
-      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&h=240&fit=crop&auto=format",
-    logo: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=80&h=80&fit=crop&auto=format",
-    verified: true,
-  },
-  {
-    id: 4,
-    name: "FashionHub Boutique",
-    category: "Fashion & Apparel",
-    location: "East Legon, Accra",
-    rating: 4.6,
-    products: 310,
-    image:
-      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=240&fit=crop&auto=format",
-    logo: "https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?w=80&h=80&fit=crop&auto=format",
-    verified: true,
-  },
-  {
-    id: 5,
-    name: "SmartHome Appliances",
-    category: "Home Appliances",
-    location: "Takoradi, Ghana",
-    rating: 4.9,
-    products: 156,
-    image:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=240&fit=crop&auto=format",
-    logo: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=80&h=80&fit=crop&auto=format",
-    verified: true,
-  },
-  {
-    id: 6,
-    name: "HealthPlus Pharmacy",
-    category: "Health & Wellness",
-    location: "Tamale, Ghana",
-    rating: 4.5,
-    products: 89,
-    image:
-      "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=600&h=240&fit=crop&auto=format",
-    logo: "https://images.unsplash.com/photo-1585435557343-3b348031a0d3?w=80&h=80&fit=crop&auto=format",
-    verified: true,
-  },
-]
-
-const PRODUCTS: Product[] = [
-  {
-    id: 1,
-    name: 'Samsung 65" QLED 4K Smart TV',
-    store: "TechWorld Electronics",
-    image:
-      "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400&h=300&fit=crop&auto=format",
-    price: 450000,
-    deposit: 90000,
-    monthly: 30000,
-    duration: 12,
-    inStock: true,
-    verified: true,
-  },
-  {
-    id: 2,
-    name: 'MacBook Pro 14" M3 Chip',
-    store: "TechWorld Electronics",
-    image:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop&auto=format",
-    price: 980000,
-    deposit: 196000,
-    monthly: 65400,
-    duration: 12,
-    inStock: true,
-    verified: true,
-  },
-  {
-    id: 3,
-    name: "Premium Sectional Sofa",
-    store: "HomeStyle Furniture",
-    image:
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop&auto=format",
-    price: 320000,
-    deposit: 64000,
-    monthly: 21340,
-    duration: 12,
-    inStock: true,
-    verified: true,
-  },
-  {
-    id: 4,
-    name: "LG Side-by-Side Refrigerator",
-    store: "SmartHome Appliances",
-    image:
-      "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&h=300&fit=crop&auto=format",
-    price: 280000,
-    deposit: 56000,
-    monthly: 18670,
-    duration: 12,
-    inStock: false,
-    verified: true,
-  },
-  {
-    id: 5,
-    name: "iPhone 15 Pro Max 256GB",
-    store: "TechWorld Electronics",
-    image:
-      "https://images.unsplash.com/photo-1696446702183-afb69c5f24a4?w=400&h=300&fit=crop&auto=format",
-    price: 760000,
-    deposit: 152000,
-    monthly: 50670,
-    duration: 12,
-    inStock: true,
-    verified: true,
-  },
-  {
-    id: 6,
-    name: "Dyson V15 Detect Vacuum",
-    store: "SmartHome Appliances",
-    image:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&auto=format",
-    price: 185000,
-    deposit: 37000,
-    monthly: 12340,
-    duration: 12,
-    inStock: true,
-    verified: true,
-  },
-]
-
-const TESTIMONIALS = [
-  {
-    id: 1,
-    name: "Ama Boateng",
-    product: 'Samsung 65" QLED TV',
-    store: "TechWorld Electronics",
-    review:
-      "AdepaPay made it so easy to get the TV I always wanted. The approval was instant, and I was watching on my new screen the very next day. The installment plan fits perfectly into my budget!",
-    avatar:
-      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&h=80&fit=crop&auto=format",
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: "Kwame Mensah",
-    product: 'MacBook Pro 14"',
-    store: "TechWorld Electronics",
-    review:
-      "As a freelance designer, the MacBook Pro was a game-changer for my career. With AdepaPay, I got it immediately and the monthly payments are very manageable. Highly recommend to every professional!",
-    avatar:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&h=80&fit=crop&auto=format",
-    rating: 5,
-  },
-  {
-    id: 3,
-    name: "Funmilayo Adekunle",
-    product: "Premium Sectional Sofa",
-    store: "HomeStyle Furniture",
-    review:
-      "I furnished my entire living room through AdepaPay. The stores are all verified and trustworthy, and the process was completely transparent — no hidden charges. This platform is genuinely life-changing!",
-    avatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop&auto=format",
-    rating: 5,
-  },
-]
-
 const FAQS = [
-  {
-    q: "How does Hire Purchase work?",
-    a: "Hire Purchase allows you to take possession of a product immediately after paying an initial deposit. You then pay the remaining balance in fixed monthly installments over an agreed period, at the end of which you become the full legal owner of the product.",
-  },
-  {
-    q: "Who can apply for Hire Purchase?",
-    a: "Any Ghanaian resident aged 18 and above with a valid Ghana Card, proof of income, and a bank or mobile money account can apply. Both salaried employees and self-employed individuals are eligible to apply through AdepaPay.",
-  },
-  {
-    q: "How much deposit is required?",
-    a: "The minimum deposit is typically 20% of the product price, though this may vary by store and product category. Some stores offer special promotions with lower deposit requirements for selected products.",
-  },
-  {
-    q: "Can I complete payment early?",
-    a: "Yes! You can make early payments or settle your hire purchase balance at any time without penalty. Early settlement can save you on interest charges and transfer full ownership to you sooner.",
-  },
-  {
-    q: "How long does approval take?",
-    a: "Most applications receive a decision within minutes. In some cases, additional verification may take up to 24 hours. You will be notified via SMS and email as soon as your application is processed.",
-  },
-  {
-    q: "Are all stores on AdepaPay verified?",
-    a: "Absolutely. Every store on AdepaPay undergoes a rigorous verification process that includes business registration checks, physical address verification, and product quality audits before they are listed on our marketplace.",
-  },
+  {q:"How does hire purchase work?",a:"Choose an eligible product, review its terms and apply. The store reviews your request. After approval and the required deposit is confirmed, the store can arrange handover while the remaining payments follow the agreed plan."},
+  {q:"How is layaway different?",a:"Layaway requires full payment before product handover. Deposits, durations and available payment frequencies are set for each product."},
+  {q:"How much deposit is required?",a:"Check the product application form. It displays the current minimum deposit and terms; there is no single deposit that applies to every listing."},
+  {q:"Can I complete payment early?",a:"Contact the store and check your accepted agreement. Do not assume early settlement changes the price or waives fees."},
+  {q:"How long does approval take?",a:"The receiving store reviews your application. Check My Applications for decisions and activity. Approval times vary; automatic SMS or email updates are not currently provided."},
+  {q:"How are featured ratings calculated?",a:"Customers can rate their store and product after a completed purchase. Featured listings rank by average rating and then number of ratings. Unrated listings display Not rated yet."},
 ]
-
-const PARTNERS = [
-  "Samsung",
-  "LG Electronics",
-  "Apple",
-  "HP",
-  "Lenovo",
-  "Sony",
-  "Dell",
-  "Panasonic",
-]
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-function formatNaira(n: number) {
-  return formatCurrency(n)
-}
 
 function useScrollReveal() {
   useEffect(() => {
@@ -291,57 +40,6 @@ function useScrollReveal() {
     els.forEach((el) => obs.observe(el))
     return () => obs.disconnect()
   })
-}
-
-function useCounter(target: number, duration = 1800) {
-  const [count, setCount] = useState(0)
-  const ref = useRef<HTMLDivElement>(null)
-  const started = useRef(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true
-          const start = performance.now()
-          const step = (now: number) => {
-            const p = Math.min((now - start) / duration, 1)
-            const eased = 1 - Math.pow(1 - p, 3)
-            setCount(Math.round(eased * target))
-            if (p < 1) requestAnimationFrame(step)
-          }
-          requestAnimationFrame(step)
-        }
-      },
-      { threshold: 0.5 },
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [target, duration])
-
-  return { count, ref }
-}
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((s) => (
-        <svg
-          key={s}
-          className={`w-4 h-4 ${
-            s <= rating ? "text-amber-400" : "text-gray-200"
-          }`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
-      ))}
-    </div>
-  )
 }
 
 function VerifiedBadge({ small }: { small?: boolean }) {
@@ -367,212 +65,7 @@ function VerifiedBadge({ small }: { small?: boolean }) {
   )
 }
 
-function StatCard({
-  icon,
-  suffix,
-  target,
-  label,
-}: {
-  icon: React.ReactNode
-  suffix: string
-  target: number
-  label: string
-}) {
-  const { count, ref } = useCounter(target)
-  return (
-    <div
-      ref={ref}
-      className="card-lift bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 flex flex-col items-center gap-3"
-    >
-      <div
-        className="w-12 h-12 rounded-xl flex items-center justify-center"
-        style={{ background: "#EAF2FF" }}
-      >
-        {icon}
-      </div>
-      <div
-        className="text-4xl font-bold tracking-tight"
-        style={{ color: "#0B5FFF" }}
-      >
-        {count.toLocaleString()}
-        {suffix}
-      </div>
-      <div className="text-sm font-medium text-gray-500">{label}</div>
-    </div>
-  )
-}
-
-function StoreCard({ store }: { store: Store }) {
-  return (
-    <div className="card-lift bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col">
-      <div className="relative h-36 bg-blue-50 overflow-hidden">
-        <img
-          src={store.image}
-          alt={store.name}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-        <div className="absolute bottom-3 left-3">
-          <img
-            src={store.logo}
-            alt=""
-            className="w-10 h-10 rounded-xl border-2 border-white object-cover shadow"
-          />
-        </div>
-        {store.verified && (
-          <div className="absolute top-3 right-3">
-            <VerifiedBadge small />
-          </div>
-        )}
-      </div>
-      <div className="p-4 flex flex-col gap-2 flex-1">
-        <h3 className="font-semibold text-gray-900 text-sm leading-tight">
-          {store.name}
-        </h3>
-        <span className="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full self-start">
-          {store.category}
-        </span>
-        <div className="flex items-center gap-1 text-xs text-gray-500">
-          <svg
-            className="w-3.5 h-3.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
-          {store.location}
-        </div>
-        <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
-          <div className="flex items-center gap-1.5">
-            <StarRating rating={Math.round(store.rating)} />
-            <span className="text-xs font-semibold text-gray-700">
-              {store.rating}
-            </span>
-          </div>
-          <span className="text-xs text-gray-500">
-            {store.products} products
-          </span>
-        </div>
-      </div>
-      <div className="px-4 pb-4">
-        <button
-          className="btn-ripple w-full py-2 rounded-xl text-sm font-semibold border-2 transition-all hover:bg-blue-600 hover:text-white hover:border-blue-600"
-          style={{ borderColor: "#0B5FFF", color: "#0B5FFF" }}
-        >
-          View Store
-        </button>
-      </div>
-    </div>
-  )
-}
-
-function ProductCard({ product }: { product: Product }) {
-  const [fav, setFav] = useState(false)
-  return (
-    <div className="card-lift bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col group">
-      <div className="relative h-44 bg-gray-50 overflow-hidden">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <button
-          onClick={() => setFav(!fav)}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-transform hover:scale-110"
-        >
-          <svg
-            className={`w-4 h-4 transition-colors ${
-              fav ? "text-red-500 fill-red-500" : "text-gray-400"
-            }`}
-            fill={fav ? "currentColor" : "none"}
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-            />
-          </svg>
-        </button>
-        {!product.inStock && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span className="bg-white text-gray-800 text-xs font-semibold px-3 py-1 rounded-full">
-              Out of Stock
-            </span>
-          </div>
-        )}
-        {product.verified && (
-          <div className="absolute bottom-3 left-3">
-            <VerifiedBadge small />
-          </div>
-        )}
-      </div>
-      <div className="p-4 flex flex-col gap-2 flex-1">
-        <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2">
-          {product.name}
-        </h3>
-        <p className="text-xs text-gray-500">{product.store}</p>
-        <div className="grid grid-cols-2 gap-2 mt-1 p-3 rounded-xl bg-gray-50 text-xs">
-          <div>
-            <div className="text-gray-400 mb-0.5">Cash Price</div>
-            <div className="font-bold text-gray-900">
-              {formatCurrency(product.price)}
-            </div>
-          </div>
-          <div>
-            <div className="text-gray-400 mb-0.5">Deposit</div>
-            <div className="font-bold text-blue-600">
-              {formatCurrency(product.deposit)}
-            </div>
-          </div>
-          <div>
-            <div className="text-gray-400 mb-0.5">Monthly</div>
-            <div className="font-bold text-emerald-600">
-              {formatCurrency(product.monthly)}
-            </div>
-          </div>
-          <div>
-            <div className="text-gray-400 mb-0.5">Duration</div>
-            <div className="font-bold text-gray-900">
-              {product.duration} months
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="px-4 pb-4 grid grid-cols-2 gap-2">
-        <button
-          className="py-2 rounded-xl text-xs font-semibold border-2 transition-all hover:bg-gray-50"
-          style={{ borderColor: "#0B5FFF", color: "#0B5FFF" }}
-        >
-          View Details
-        </button>
-        <button
-          disabled={!product.inStock}
-          className="btn-ripple py-2 rounded-xl text-xs font-semibold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-          style={{ background: product.inStock ? "#0B5FFF" : "#9CA3AF" }}
-        >
-          Apply Now
-        </button>
-      </div>
-    </div>
-  )
-}
-
-function FAQItem({ q, a, idx }: { q: string a: string idx: number }) {
+function FAQItem({ q, a, idx }: { q: string; a: string; idx: number }) {
   const [open, setOpen] = useState(idx === 0)
   return (
     <div className="border border-gray-100 rounded-2xl overflow-hidden bg-white">
@@ -1186,121 +679,80 @@ function MerchantIllustration() {
 }
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
-function Toast({ visible, onClose }: { visible: boolean onClose: () => void }) {
-  useEffect(() => {
-    if (visible) {
-      const t = setTimeout(onClose, 4000)
-      return () => clearTimeout(t)
-    }
-  }, [visible, onClose])
-
-  if (!visible) return null
-  return (
-    <div className="toast-enter fixed bottom-24 right-6 z-50 bg-white border border-gray-100 shadow-xl rounded-xl p-4 flex items-start gap-3 max-w-xs">
-      <div
-        className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-        style={{ background: "#EAF2FF" }}
-      >
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="#0B5FFF"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-          />
-        </svg>
-      </div>
-      <div className="flex-1">
-        <p className="text-sm font-semibold text-gray-900">
-          New Products Available!
-        </p>
-        <p className="text-xs text-gray-500 mt-0.5">
-          Samsung Galaxy S25 is now listed on AdepaPay
-        </p>
-      </div>
-      <button
-        onClick={onClose}
-        className="text-gray-300 hover:text-gray-500 transition-colors"
-      >
-        <Icon.X />
-      </button>
-    </div>
-  )
-}
-
-// ─── Cookie Banner ────────────────────────────────────────────────────────────
-function CookieBanner({ onAccept }: { onAccept: () => void }) {
-  return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 p-4">
-      <div className="max-w-3xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-          <Icon.Shield />
-        </div>
-        <div className="flex-1">
-          <p className="text-sm font-semibold text-gray-900">We use cookies</p>
-          <p className="text-xs text-gray-500 mt-0.5">
-            We use cookies to improve your experience on AdepaPay. By
-            continuing, you agree to our privacy policy.
-          </p>
-        </div>
-        <div className="flex gap-2 flex-shrink-0">
-          <button
-            onClick={onAccept}
-            className="px-4 py-2 rounded-xl text-xs font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
-          >
-            Decline
-          </button>
-          <button
-            onClick={onAccept}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-white transition-colors"
-            style={{ background: "#0B5FFF" }}
-          >
-            Accept All
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
   type UserRole = "Customer" | "Store Manager" | "Field Agent" | "Admin"
-  type Page = "home" | "services" | "browse-stores" | "store-details" | "browse-products" | "register" | "store-registration" | "login" | "otp" | "forgot-password" | "portal"
-  const [role, setRole] = useState<UserRole | null>(
-    () => sessionStorage.getItem("adepapay-role") as UserRole | null,
-  )
+  type Page = "home" | "services" | "browse-stores" | "store-details" | "browse-products" | "register" | "store-registration" | "login" | "portal" | "info"
+  const [selectedStoreId, setSelectedStoreId] = useState('')
+  const [selectedProductId,setSelectedProductId]=useState('')
+  const [productKind,setProductKind]=useState<'hire_purchase'|'layaway'|'swap'|undefined>()
+  const [infoTopic,setInfoTopic]=useState('About AdepaPay')
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null)
+  const [role, setRole] = useState<UserRole | null>(null)
+  const [authLoading, setAuthLoading] = useState(true)
+  const [authError, setAuthError] = useState('')
   const [page, setPage] = useState<Page>(() =>
-    window.location.pathname === "/services"
-      ? "services"
-      : sessionStorage.getItem("adepapay-role")
-        ? "portal"
-        : "home",
+    window.location.pathname === "/services" ? "services" : "home",
   )
 
-  const handleLogin = (nextRole: UserRole) => {
-    sessionStorage.setItem("adepapay-role", nextRole)
-    if (nextRole === "Store Manager" && !sessionStorage.getItem("adepapay-store-id"))
-      sessionStorage.setItem("adepapay-store-id", "cytech-gadgets")
-    setRole(nextRole)
-    setPage("portal")
+  useEffect(() => {
+    let active = true
+    authRequest('session').then(result => {
+      if (active && result.user) {
+        setAuthUser(result.user)
+        setRole(result.user.role)
+        setPage('portal')
+      }
+    }).catch(() => {}).finally(() => { if (active) setAuthLoading(false) })
+    return () => { active = false }
+  }, [])
+
+  useEffect(() => {
+    if (!role) return
+    let active = true
+    const checkSession = () => {
+      authRequest('session').then(result => {
+        if (active && result.user) { setAuthUser(result.user); setRole(result.user.role) }
+      }).catch(error => {
+        if (active && error instanceof AuthError && error.status === 401) {
+          setAuthUser(null)
+          setRole(null)
+          setPage('login')
+        }
+      })
+    }
+    const interval = window.setInterval(checkSession, 60000)
+    window.addEventListener('focus', checkSession)
+    return () => {
+      active = false
+      window.clearInterval(interval)
+      window.removeEventListener('focus', checkSession)
+    }
+  }, [role])
+
+  const browseProducts=()=>{setSelectedProductId('');setProductKind(undefined);setPage("browse-products")}
+
+  const handleLogin = (user: AuthUser) => {
+    setAuthUser(user)
+    setRole(user.role)
+    setPage('portal')
   }
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("adepapay-role")
-    sessionStorage.removeItem("adepapay-store-id")
-    sessionStorage.removeItem("adepapay-agent-id")
-    setRole(null)
-    setPage("login")
+  const handleLogout = async () => {
+    try {
+      await authRequest('logout', {})
+      for (const key of ['adepapay-role', 'adepapay-store-id', 'adepapay-agent-id']) sessionStorage.removeItem(key)
+      setAuthUser(null)
+      setRole(null)
+      setAuthError('')
+      setPage('login')
+    } catch (error) {
+      setAuthError(error instanceof Error ? error.message : 'Unable to sign out. Please try again.')
+    }
   }
 
   useEffect(() => {
     const pageTitles = {
+      info: infoTopic,
       home: "Home",
       services: "Our Services",
       "browse-stores": "Browse Stores",
@@ -1309,40 +761,59 @@ export default function App() {
       register: "Register",
       "store-registration": "Become a Partner",
       login: "Login",
-      otp: "OTP Verification",
-      "forgot-password": "Forgot Password",
       portal: role ? `${role} Dashboard` : "Dashboard",
     } as const
 
     document.title = `AdepaPay | ${pageTitles[page]}`
-  }, [page, role])
+  }, [page, role, infoTopic])
 
+  useEffect(() => {
+    if(authLoading)return
+    document.documentElement.dataset.sitePage=page
+    window.dispatchEvent(new CustomEvent("site-navigation",{detail:{page,id:crypto.randomUUID()}}))
+  },[page,authLoading,selectedStoreId,selectedProductId,infoTopic])
+
+  if (authLoading) return <div role="status" className="min-h-screen grid place-items-center text-slate-600">Loading your account...</div>
+  if (authError) return <div role="alert" className="min-h-screen flex flex-col items-center justify-center gap-4"><p>{authError}</p><button onClick={handleLogout}>Retry sign out</button><button onClick={() => setAuthError('')}>Back to dashboard</button></div>
+
+  if (page === "portal" && role && authUser?.store_application) {
+    return <div className="min-h-screen grid place-items-center bg-slate-50 p-6"><main className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm"><p className="text-sm font-bold text-amber-700">{authUser.store_application.status}</p><h1 className="mt-3 text-2xl font-bold text-slate-900">{authUser.store_application.storeName}</h1><p className="mt-3 text-slate-600">{authUser.store_application.status === "Rejected" ? "Your store application was rejected." : "Your store application has been received. Store management access will be available after approval."}{authUser.store_application.reason && <span className="mt-2 block">{authUser.store_application.reason}</span>}</p><p className="mt-5 break-all text-sm text-slate-500">Reference: {authUser.store_application.reference}</p><p className="mt-2 text-sm text-slate-500">{authUser.email}</p><button onClick={handleLogout} className="mt-6 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white">Sign out</button></main></div>
+  }
+
+  if (page === "portal" && role === "Store Manager" && (!authUser?.subscription?.active || new URLSearchParams(window.location.search).get('billing') === 'return')) {
+    return <StoreBilling onLogout={handleLogout} onContinue={() => window.location.assign('/')} />
+  }
   if (page === "portal" && role) {
     if (role === "Field Agent")
       return (
         <FieldAgentPortal
-          agentId={sessionStorage.getItem("adepapay-agent-id") || "AGT-0018"}
           onLogout={handleLogout}
         />
       )
     return (
       <CustomerPortal
+        staff={authUser?.staff === true}
+        permissions={authUser?.permissions}
+        displayName={authUser?.name}
+        roleTitle={authUser?.roleTitle}
+        storeName={authUser?.store?.name}
         role={role}
-        storeId={sessionStorage.getItem("adepapay-store-id") || "cytech-gadgets"}
+        storeId={authUser?.store?.id || authUser?.id || ""}
         onLogout={handleLogout}
         onBrowseStores={() => setPage("browse-stores")}
-        onBrowseProducts={() => setPage("browse-products")}
+        onBrowseProducts={browseProducts}
       />
     )
   }
+  if (page === "info") return <PublicInformation topic={infoTopic} onHome={() => setPage("home")} onStores={() => setPage("browse-stores")} onProducts={browseProducts} onRegister={() => setPage("register")} />
   if (page === "services") {
     return (
       <Services
         onHome={() => setPage("home")}
         onBrowseStores={() => setPage("browse-stores")}
         onBrowseProducts={(service) => {
-          if (service) sessionStorage.setItem("adepapay-product-service", service)
-          else sessionStorage.removeItem("adepapay-product-service")
+          setSelectedProductId('')
+          setProductKind(service === "hire-purchase" ? "hire_purchase" : service)
           setPage("browse-products")
         }}
         onLogin={() => setPage("login")}
@@ -1355,9 +826,10 @@ export default function App() {
   if (page === "browse-stores") {
     return (
       <BrowseStores
+        onServices={() => setPage("services")}
         onBack={() => setPage(role ? "portal" : "home")}
-        onStoreDetails={() => setPage("store-details")}
-        onBrowseProducts={() => setPage("browse-products")}
+        onStoreDetails={(id) => { setSelectedStoreId(id); setPage("store-details") }}
+        onBrowseProducts={browseProducts}
         onLogin={() => setPage("login")}
         onRegister={() => setPage("register")}
         onBecomePartner={() => setPage("store-registration")}
@@ -1367,9 +839,11 @@ export default function App() {
   if (page === "store-details") {
     return (
       <StoreDetails
+        onServices={() => setPage("services")}
+        storeId={selectedStoreId}
         onBack={() => setPage(role ? "portal" : "home")}
         onBrowseStores={() => setPage("browse-stores")}
-        onBrowseProducts={() => setPage("browse-products")}
+        onBrowseProducts={browseProducts}
         onLogin={() => setPage("login")}
         onRegister={() => setPage("register")}
         onBecomePartner={() => setPage("store-registration")}
@@ -1379,6 +853,9 @@ export default function App() {
   if (page === "browse-products") {
     return (
       <BrowseProducts
+        onServices={() => setPage("services")}
+        initialProduct={selectedProductId}
+        applyKind={productKind}
         onBack={() => setPage(role ? "portal" : "home")}
         onBrowseStores={() => setPage("browse-stores")}
         onLogin={() => setPage("login")}
@@ -1392,74 +869,57 @@ export default function App() {
       <Login
         onBack={() => setPage("home")}
         onBrowseStores={() => setPage("browse-stores")}
-        onBrowseProducts={() => setPage("browse-products")}
+        onBrowseProducts={browseProducts}
         onRegister={() => setPage("register")}
         onLogin={handleLogin}
-      />
-    )
-  }
-  if (page === "otp") {
-    return (
-      <OTPVerification
-        onBack={() => setPage("login")}
-        onSuccess={() => setPage("home")}
-      />
-    )
-  }
-  if (page === "forgot-password") {
-    return (
-      <ForgotPassword
-        onBack={() => setPage("login")}
-        onLogin={() => setPage("login")}
       />
     )
   }
   if (page === "register") {
     return (
       <Register
+        onRegisterStore={() => setPage("store-registration")}
+        onLogin={() => setPage("login")}
         onBack={() => setPage("home")}
         onBrowseStores={() => setPage("browse-stores")}
-        onBrowseProducts={() => setPage("browse-products")}
+        onBrowseProducts={browseProducts}
       />
     )
   }
   if (page === "store-registration") {
     return (
       <StoreRegistration
+        onCustomerRegister={() => setPage("register")}
         onBack={() => setPage("home")}
         onLogin={() => setPage("login")}
       />
     )
   }
-  return <Landing onNavigate={setPage} />
+  return <Landing onNavigate={(page)=>{setProductKind(undefined);setSelectedProductId('');setPage(page)}} onStore={(id)=>{setSelectedStoreId(id);setPage("store-details")}} onProduct={(id)=>{setProductKind(undefined);setSelectedProductId(id);setPage("browse-products")}} onInfo={(topic)=>{setInfoTopic(topic);setPage("info")}} />
 }
 
 function Landing({
+  onStore,onProduct,onInfo,
   onNavigate,
 }: {
+  onStore:(id:string)=>void;onProduct:(id:string)=>void;onInfo:(topic:string)=>void;
   onNavigate: (
     p: "services" | "browse-stores" | "browse-products" | "register" | "store-registration" | "login",
   ) => void
 }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
   const [showBackTop, setShowBackTop] = useState(false)
-  const [showToast, setShowToast] = useState(false)
-  const [cookieAccepted, setCookieAccepted] = useState(false)
-  const [chatOpen, setChatOpen] = useState(false)
 
   useScrollReveal()
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 20)
       setShowBackTop(window.scrollY > 400)
     }
     window.addEventListener("scroll", onScroll)
-    const t = setTimeout(() => setShowToast(true), 3000)
+
     return () => {
       window.removeEventListener("scroll", onScroll)
-      clearTimeout(t)
+
     }
   }, [])
 
@@ -1467,15 +927,6 @@ function Landing({
     () => window.scrollTo({ top: 0, behavior: "smooth" }),
     [],
   )
-
-  const NAV_LINKS = [
-    "Home",
-    "Browse Stores",
-    "Products",
-    "How It Works",
-    "About Us",
-    "Contact",
-  ]
 
   return (
     <div className="min-h-screen bg-white font-sans">
@@ -1567,10 +1018,10 @@ function Landing({
                 </div>
                 <div className="flex flex-wrap gap-4">
                   {[
-                    "Verified Stores",
-                    "Secure Payments",
+                    "Approved Stores",
+                    "Recorded Payments",
                     "Flexible Installments",
-                    "Fast Approval",
+                    "Store Review",
                   ].map((badge, index) => (
                     <div
                       key={badge}
@@ -1592,92 +1043,7 @@ function Landing({
                 </div>
               </div>
               <div className="hero-visual" style={{ animationDelay: "300ms" }}>
-                <HeroIllustration />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── TRUSTED PARTNERS ──────────────────────────────────────────────── */}
-        <section className="py-14 px-4 sm:px-6 lg:px-8 border-y border-gray-100">
-          <div className="max-w-7xl mx-auto">
-            <p className="text-center text-sm font-semibold tracking-widest uppercase text-gray-400 mb-8">
-              Trusted by Leading Stores
-            </p>
-            <div className="flex flex-wrap justify-center items-center gap-8 lg:gap-12">
-              {PARTNERS.map((p) => (
-                <div
-                  key={p}
-                  className="text-lg font-bold tracking-tight transition-all duration-300 cursor-pointer"
-                  style={{ color: "#C5CBD3", filter: "grayscale(1)" }}
-                  onMouseEnter={(e) => {
-                    ;(e.currentTarget as HTMLElement).style.color = "#0B5FFF"
-                    ;(e.currentTarget as HTMLElement).style.filter =
-                      "grayscale(0)"
-                  }}
-                  onMouseLeave={(e) => {
-                    ;(e.currentTarget as HTMLElement).style.color = "#C5CBD3"
-                    ;(e.currentTarget as HTMLElement).style.filter =
-                      "grayscale(1)"
-                  }}
-                >
-                  {p}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── STATISTICS ────────────────────────────────────────────────────── */}
-        <section
-          className="py-20 px-4 sm:px-6 lg:px-8"
-          style={{ background: "#F8FAFC" }}
-        >
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12 reveal">
-              <h2
-                className="text-3xl sm:text-4xl font-bold mb-3"
-                style={{ color: "#101828" }}
-              >
-                Platform at a Glance
-              </h2>
-              <p className="text-gray-500 max-w-lg mx-auto">
-                Thousands of Ghanaians trust AdepaPay to buy smarter and live
-                better.
-              </p>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="reveal" style={{ transitionDelay: "0s" }}>
-                <StatCard
-                  icon={<Icon.Store />}
-                  target={120}
-                  suffix="+"
-                  label="Verified Stores"
-                />
-              </div>
-              <div className="reveal" style={{ transitionDelay: "0.1s" }}>
-                <StatCard
-                  icon={<Icon.Package />}
-                  target={5000}
-                  suffix="+"
-                  label="Products Available"
-                />
-              </div>
-              <div className="reveal" style={{ transitionDelay: "0.2s" }}>
-                <StatCard
-                  icon={<Icon.Users />}
-                  target={15000}
-                  suffix="+"
-                  label="Happy Customers"
-                />
-              </div>
-              <div className="reveal" style={{ transitionDelay: "0.3s" }}>
-                <StatCard
-                  icon={<Icon.CreditCard />}
-                  target={50}
-                  suffix="M+"
-                  label="Hire Purchases Processed"
-                />
+                <HeroIllustration /><p className="mt-3 text-center text-xs text-slate-500">Illustrative plan preview. Actual products and terms appear below.</p>
               </div>
             </div>
           </div>
@@ -1709,17 +1075,7 @@ function Landing({
                 View All Stores <Icon.ArrowRight />
               </button>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {STORES.map((store, i) => (
-                <div
-                  key={store.id}
-                  className="reveal"
-                  style={{ transitionDelay: `${i * 0.07}s` }}
-                >
-                  <StoreCard store={store} />
-                </div>
-              ))}
-            </div>
+            <FeaturedListings type="stores" onSelect={onStore} />
             <div className="text-center mt-10 reveal">
               <button
                 onClick={() => onNavigate("browse-stores")}
@@ -1761,17 +1117,7 @@ function Landing({
                 Browse All Products <Icon.ArrowRight />
               </button>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {PRODUCTS.map((product, i) => (
-                <div
-                  key={product.id}
-                  className="reveal"
-                  style={{ transitionDelay: `${i * 0.07}s` }}
-                >
-                  <ProductCard product={product} />
-                </div>
-              ))}
-            </div>
+            <FeaturedListings type="products" onSelect={onProduct} />
           </div>
         </section>
 
@@ -1810,7 +1156,7 @@ function Landing({
                   step: "01",
                   icon: <Icon.Store />,
                   title: "Browse Stores",
-                  desc: "Explore our marketplace of 120+ verified stores across Ghana. Filter by category, location, and rating.",
+                  desc: "Explore approved stores across Ghana and compare their published products and terms.",
                 },
                 {
                   step: "02",
@@ -1822,13 +1168,13 @@ function Landing({
                   step: "03",
                   icon: <Icon.Clipboard />,
                   title: "Apply for Hire Purchase",
-                  desc: "Complete a quick application in minutes. Our smart system reviews and approves most requests instantly.",
+                  desc: "Complete the required details and documents. Your selected store reviews the application.",
                 },
                 {
                   step: "04",
                   icon: <Icon.CreditCard />,
                   title: "Pay Monthly Until Ownership",
-                  desc: "Receive your product after deposit payment. Pay monthly until it is fully yours — no hidden fees.",
+                  desc: "Arrange handover with the store after approval and the required payment. Follow your agreed schedule.",
                 },
               ].map((s, i) => (
                 <div
@@ -1895,13 +1241,13 @@ function Landing({
               {[
                 {
                   icon: <Icon.Shield />,
-                  title: "Verified Stores",
-                  desc: "Every merchant undergoes rigorous verification before listing on our platform.",
+                  title: "Approved Stores",
+                  desc: "Public listings belong to stores approved to participate in the marketplace.",
                 },
                 {
                   icon: <Icon.Lock />,
-                  title: "Secure Transactions",
-                  desc: "Bank-level encryption and fraud protection on every payment.",
+                  title: "Payment Records",
+                  desc: "View payments recorded by your store and download the associated receipts.",
                 },
                 {
                   icon: <Icon.CreditCard />,
@@ -1910,28 +1256,28 @@ function Landing({
                 },
                 {
                   icon: <Icon.Bolt />,
-                  title: "Fast Approval",
-                  desc: "Most applications get an instant decision in under 3 minutes.",
+                  title: "Store Review",
+                  desc: "Track the store decision and application activity from your account.",
                 },
                 {
                   icon: <Icon.Users />,
                   title: "Trusted Platform",
-                  desc: "Over 15,000 happy customers and counting with a 4.8/5 satisfaction score.",
+                  desc: "Ratings come from customers with completed purchases.",
                 },
                 {
                   icon: <Icon.Chat />,
                   title: "Customer Support",
-                  desc: "24/7 support via chat, phone, and email — always a human, never a bot.",
+                  desc: "Ask the AI assistant about platform features and contact your store for order support.",
                 },
                 {
                   icon: <Icon.Calendar />,
                   title: "Flexible Plans",
-                  desc: "Choose 3, 6, 9, or 12-month payment durations to suit your budget.",
+                  desc: "Review the durations and payment frequencies offered for your selected product.",
                 },
                 {
                   icon: <Icon.Package />,
                   title: "Wide Selection",
-                  desc: "Electronics, furniture, vehicles, fashion — over 5,000 products across all categories.",
+                  desc: "Explore the live catalogue and filter by the categories available from participating stores.",
                 },
               ].map((f, i) => (
                 <div
@@ -1950,62 +1296,6 @@ function Landing({
                   </h3>
                   <p className="text-xs text-gray-500 leading-relaxed">
                     {f.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── TESTIMONIALS ──────────────────────────────────────────────────── */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12 reveal">
-              <p
-                className="text-sm font-semibold uppercase tracking-widest mb-2"
-                style={{ color: "#0B5FFF" }}
-              >
-                Social Proof
-              </p>
-              <h2
-                className="text-3xl sm:text-4xl font-bold mb-3"
-                style={{ color: "#101828" }}
-              >
-                What Customers Say
-              </h2>
-              <p className="text-gray-500 max-w-md mx-auto">
-                Real reviews from real Ghanaians who own their products through
-                AdepaPay.
-              </p>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {TESTIMONIALS.map((t, i) => (
-                <div
-                  key={t.id}
-                  className="card-lift reveal bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col"
-                  style={{ transitionDelay: `${i * 0.1}s` }}
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <img
-                      src={t.avatar}
-                      alt={t.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-blue-100"
-                    />
-                    <div>
-                      <p
-                        className="font-semibold text-sm"
-                        style={{ color: "#101828" }}
-                      >
-                        {t.name}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {t.product} · {t.store}
-                      </p>
-                    </div>
-                  </div>
-                  <StarRating rating={t.rating} />
-                  <p className="text-sm text-gray-600 leading-relaxed mt-3 flex-1">
-                    "{t.review}"
                   </p>
                 </div>
               ))}
@@ -2062,7 +1352,7 @@ function Landing({
             >
               <div className="grid lg:grid-cols-2 gap-10 p-10 lg:p-16 items-center">
                 <div className="reveal order-2 lg:order-1">
-                  <MerchantIllustration />
+                  <MerchantIllustration /><p className="mt-3 text-center text-xs text-slate-500">Illustrative workspace preview; figures shown are examples.</p>
                 </div>
                 <div
                   className="reveal order-1 lg:order-2"
@@ -2084,16 +1374,14 @@ function Landing({
                     with AdepaPay
                   </h2>
                   <p className="text-gray-500 text-base leading-relaxed mb-6">
-                    Join hundreds of verified merchants and sell more through
-                    flexible hire purchase. AdepaPay handles the financing — you
-                    just ship the products.
+                    Publish products, review applications and manage agreed payment plans in your store workspace.
                   </p>
                   <ul className="space-y-3 mb-8">
                     {[
-                      "Get paid upfront — AdepaPay handles installments",
-                      "Reach 15,000+ active customers",
-                      "Real-time dashboard with full analytics",
-                      "Zero risk: we verify customer creditworthiness",
+                      "Review applications and record received payments",
+                      "Reach customers browsing the marketplace",
+                      "Store dashboards with application and payment records",
+                      "Review customer details and supporting documents",
                     ].map((b) => (
                       <li
                         key={b}
@@ -2118,6 +1406,7 @@ function Landing({
                       Register Your Store
                     </button>
                     <button
+                      onClick={() => onInfo("About")}
                       className="px-6 py-3 rounded-xl text-sm font-semibold border-2 hover:bg-blue-50 transition-all"
                       style={{ borderColor: "#0B5FFF", color: "#0B5FFF" }}
                     >
@@ -2147,14 +1436,13 @@ function Landing({
               Next Product?
             </h2>
             <p className="text-blue-200 text-base mb-8 max-w-lg mx-auto leading-relaxed">
-              Join over 15,000 Ghanaians who already own their dream products
-              through AdepaPay. Start with zero paperwork in under 5 minutes.
+              Browse available products and review the payment options offered by each store before applying.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn-ripple px-8 py-3.5 rounded-xl font-semibold text-sm text-blue-700 bg-white hover:bg-blue-50 transition-all">
+              <button onClick={() => onNavigate("browse-products")} className="btn-ripple px-8 py-3.5 rounded-xl font-semibold text-sm text-blue-700 bg-white hover:bg-blue-50 transition-all">
                 Browse Products
               </button>
-              <button className="btn-ripple px-8 py-3.5 rounded-xl font-semibold text-sm text-white border-2 border-white/40 hover:border-white hover:bg-white/10 transition-all">
+              <button onClick={() => onNavigate("register")} className="btn-ripple px-8 py-3.5 rounded-xl font-semibold text-sm text-white border-2 border-white/40 hover:border-white hover:bg-white/10 transition-all">
                 Create Free Account
               </button>
             </div>
@@ -2181,26 +1469,14 @@ function Landing({
                   Ghana's premier hire purchase marketplace. Buy today, pay
                   smart, own tomorrow.
                 </p>
-                {/* Newsletter */}
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="flex-1 px-3 py-2.5 rounded-xl text-sm bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
-                  />
-                  <button
-                    className="px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-                    style={{ background: "#0B5FFF" }}
-                  >
-                    Subscribe
-                  </button>
-                </div>
+                <button className="rounded-xl border border-slate-500 px-4 py-2 text-sm text-white" onClick={()=>window.dispatchEvent(new Event("cookie-settings"))}>Cookie preferences</button>
+
               </div>
               {/* Links */}
               {[
                 {
                   title: "Company",
-                  links: ["About", "Careers", "Blog", "Press"],
+                  links: ["About", "Help Center", "Become a Partner"],
                 },
                 {
                   title: "Products",
@@ -2231,6 +1507,7 @@ function Landing({
                       <li key={link}>
                         <a
                           href="#"
+                          onClick={(event)=>{event.preventDefault(); if(link==="Browse Stores")onNavigate("browse-stores");else if(["Browse Products","Products","Categories","Hire Purchase","New Arrivals"].includes(link))onNavigate("browse-products");else if(link==="Become a Partner")onNavigate("store-registration");else onInfo(link)}}
                           className="text-sm text-gray-400 hover:text-white transition-colors"
                         >
                           {link}
@@ -2246,83 +1523,7 @@ function Landing({
               <p className="text-xs text-gray-500">
                 © 2026 AdepaPay Technologies Ltd. All rights reserved.
               </p>
-              <div className="flex items-center gap-3">
-                {/* Social icons */}
-                {[
-                  {
-                    label: "Facebook",
-                    path: "M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z",
-                  },
-                  {
-                    label: "LinkedIn",
-                    path: "M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z M4 6a2 2 0 100-4 2 2 0 000 4z",
-                  },
-                ].map((s) => (
-                  <a
-                    key={s.label}
-                    href="#"
-                    className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-800 text-gray-400 hover:bg-blue-600 hover:text-white transition-all"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d={s.path} />
-                    </svg>
-                  </a>
-                ))}
-                {/* Instagram */}
-                <a
-                  href="#"
-                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-800 text-gray-400 hover:bg-blue-600 hover:text-white transition-all"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    viewBox="0 0 24 24"
-                  >
-                    <rect
-                      x="2"
-                      y="2"
-                      width="20"
-                      height="20"
-                      rx="5"
-                      ry="5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"
-                    />
-                    <line
-                      x1="17.5"
-                      y1="6.5"
-                      x2="17.51"
-                      y2="6.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </a>
-                {/* X */}
-                <a
-                  href="#"
-                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-800 text-gray-400 hover:bg-blue-600 hover:text-white transition-all"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                  </svg>
-                </a>
-              </div>
+
             </div>
           </div>
         </footer>
@@ -2330,54 +1531,10 @@ function Landing({
 
       {/* ── FLOATING COMPONENTS ──────────────────────────────────────────────── */}
 
-      {/* Live Chat */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
-        {chatOpen && (
-          <div className="w-72 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden mb-2">
-            <div
-              className="flex items-center gap-3 px-4 py-3 text-white"
-              style={{ background: "#0B5FFF" }}
-            >
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                <Icon.Chat />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">AdepaPay Support</p>
-                <p className="text-xs opacity-80">
-                  ● Online · Typically replies instantly
-                </p>
-              </div>
-              <button
-                className="ml-auto text-white/70 hover:text-white"
-                onClick={() => setChatOpen(false)}
-              >
-                <Icon.X />
-              </button>
-            </div>
-            <div className="p-4">
-              <div className="bg-gray-50 rounded-xl p-3 text-sm text-gray-600 mb-3">
-                Hi there! Welcome to AdepaPay. How can we help you today?
-              </div>
-              <input
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400 transition-colors"
-                placeholder="Type your message..."
-              />
-            </div>
-          </div>
-        )}
-        <button
-          onClick={() => setChatOpen(!chatOpen)}
-          className="btn-ripple w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-white transition-all hover:scale-105"
-          style={{ background: "#0B5FFF" }}
-        >
-          {chatOpen ? <Icon.X /> : <Icon.Chat />}
-        </button>
-      </div>
-
       {/* Back to Top */}
       <button
         onClick={scrollTop}
-        className="fixed left-6 bottom-6 z-40 w-10 h-10 rounded-full shadow-lg flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+        className="fixed left-6 bottom-16 z-40 w-10 h-10 rounded-full shadow-lg flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
         style={{
           background: "#101828",
           opacity: showBackTop ? 1 : 0,
@@ -2387,13 +1544,6 @@ function Landing({
         <Icon.ArrowUp />
       </button>
 
-      {/* Toast */}
-      <Toast visible={showToast} onClose={() => setShowToast(false)} />
-
-      {/* Cookie Banner */}
-      {!cookieAccepted && (
-        <CookieBanner onAccept={() => setCookieAccepted(true)} />
-      )}
     </div>
   )
 }

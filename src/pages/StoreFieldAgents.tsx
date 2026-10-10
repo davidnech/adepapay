@@ -886,7 +886,7 @@ function AgentDetailsModal({
   )
 }
 
-function AgentInfoCard({ title, rows }: { title: string rows: string[][] }) {
+function AgentInfoCard({ title, rows }: { title: string; rows: string[][] }) {
   return (
     <div className="rounded-2xl bg-slate-50 p-4">
       <h4 className="font-bold">{title}</h4>
@@ -906,7 +906,7 @@ function AgentInfoCard({ title, rows }: { title: string rows: string[][] }) {
   )
 }
 
-function AgentDocument({ label, value }: { label: string value: string }) {
+function AgentDocument({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-slate-200 p-4">
       <div className="text-xs font-bold text-slate-500">{label}</div>

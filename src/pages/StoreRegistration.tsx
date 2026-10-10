@@ -1,5 +1,7 @@
+import { authRequest, type SMSVerification } from '../lib/auth'
+import OTPVerification from './OTPVerification'
 import { useState, type FormEvent, type ReactNode } from "react"
-import { GHANA_REGIONS, getGhanaRegionalCapital } from "../lib/localization"
+import { GHANA_REGIONS, getGhanaRegionalCapital, isValidGhanaPhoneNumber } from "../lib/localization"
 
 type StoreApplication = {
   storeName: string
@@ -340,20 +342,45 @@ function SectionHeading({
 export default function StoreRegistration({
   onBack,
   onLogin,
+  onCustomerRegister,
 }: {
   onBack: () => void
   onLogin: () => void
+  onCustomerRegister: () => void
 }) {
   const [form, setForm] = useState(INITIAL)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
+  const [serverError, setServerError] = useState('')
+  const [complete, setComplete] = useState(false)
+  const [confirmationRequired, setConfirmationRequired] = useState(false)
+  const [verification, setVerification] = useState<SMSVerification | null>(null)
+  const [welcomeSent, setWelcomeSent] = useState(true)
+  const [agreeTerms, setAgreeTerms] = useState(false)
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [reference, setReference] = useState("")
   const set =
     (key: Exclude<keyof StoreApplication, "categories">) => (value: string) =>
       setForm({ ...form, [key]: value })
 
+  const finishRegistration = async () => {
+    const result = await authRequest('store-signup', { ...form, agreeTerms })
+    if (result.verification_required && result.verification) {
+      setVerification(result.verification)
+      return
+    }
+    setVerification(null)
+    setWelcomeSent(result.welcome_sms_sent !== false)
+    setReference(result.application_reference || '')
+    setConfirmationRequired(Boolean(result.confirmation_required))
+    setForm(current => ({ ...current, password: '' }))
+    setConfirmPassword('')
+    sessionStorage.removeItem('adepapay-store-application')
+    setComplete(true)
+  }
   const submit = async (event: FormEvent) => {
     event.preventDefault()
+    if (submitting) return
     const required = Object.entries(form).filter(([, value]) =>
       Array.isArray(value) ? value.length === 0 : !value.trim(),
     )
@@ -364,24 +391,24 @@ export default function StoreRegistration({
       nextErrors.email = "Enter a valid email address"
     if (form.password && form.password.length < 8)
       nextErrors.password = "Use at least 8 characters"
+    if (!isValidGhanaPhoneNumber(form.phone)) nextErrors.phone = 'Enter a valid Ghanaian phone number'
+    if (form.password !== confirmPassword) nextErrors.confirmPassword = 'Passwords do not match'
+    if (!agreeTerms) nextErrors.agreeTerms = 'Accept the Terms and Privacy Policy to continue'
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length) return
     setSubmitting(true)
-    await new Promise((resolve) => window.setTimeout(resolve, 1000))
-    const applicationReference = `BPS-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`
-    sessionStorage.setItem(
-      "adepapay-store-application",
-      JSON.stringify({
-        ...form,
-        reference: applicationReference,
-        status: "Pending Approval",
-      }),
-    )
-    setReference(applicationReference)
-    setSubmitting(false)
+    setServerError('')
+    try {
+      await finishRegistration()
+    } catch (error) {
+      setServerError(error instanceof Error ? error.message : 'Unable to register your store. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
-  if (reference)
+  if (verification) return <OTPVerification verification={verification} onVerified={finishRegistration} onBack={() => setVerification(null)} />
+  if (complete)
     return (
       <div className="login-scene relative flex min-h-screen items-center justify-center overflow-hidden px-4">
         <div className="login-grid absolute inset-0" />
@@ -402,18 +429,18 @@ export default function StoreRegistration({
             Pending approval
           </span>
           <h1 className="mt-3 text-2xl font-bold text-slate-950">
-            Application received
+            Store registration successful
           </h1>
           <p className="mt-2 text-sm leading-6 text-slate-500">
-            Thanks, {form.ownerName}. We’ll verify {form.storeName} and notify
-            you by email. Store Manager access becomes available after approval.
+            {confirmationRequired ? 'Check your email for a confirmation link, then sign in. If you already have an account, sign in instead.' : `Thanks, ${form.ownerName}. Your application for ${form.storeName} has been saved. Sign in to view its status. Store management access is pending approval.`}
           </p>
+          {!welcomeSent && <p role="status" className="mt-3 text-sm text-amber-700">Registration succeeded, but the confirmation SMS could not be confirmed.</p>}
           <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Application reference
             </div>
             <div className="mt-1 font-mono text-lg font-bold text-slate-900">
-              {reference}
+              {reference || "Available after sign in"}
             </div>
           </div>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -473,10 +500,12 @@ export default function StoreRegistration({
               Become a store partner
             </h1>
             <p className="mt-1 text-sm text-slate-500">
-              Create your store account and submit it for verification.
+              Verify your phone by SMS, then submit your store application for approval.
             </p>
           </div>
-          <div className="mt-7 grid gap-6">
+          <div className="mt-5 flex justify-center gap-4 text-sm font-semibold text-blue-600"><button type="button" onClick={onCustomerRegister}>Register as a customer</button><button type="button" onClick={onLogin}>Already registered? Sign in</button></div>
+          {serverError && <p role="alert" className="mt-5 rounded-xl bg-red-50 p-4 text-sm text-red-700">{serverError}</p>}
+          <fieldset disabled={submitting} className="mt-7 grid gap-6 disabled:opacity-70">
             <section>
               <SectionHeading
                 title="Store information"
@@ -628,10 +657,17 @@ export default function StoreRegistration({
                 />
               </div>
             </section>
-          </div>
+          </fieldset>
           <div className="mt-7 rounded-2xl bg-blue-50 p-4 text-xs leading-5 text-blue-800">
             Submitting creates a pending store account. Our team reviews your
             business information before enabling Store Manager access.
+          </div>
+          <div className="mt-5">
+            <label htmlFor="store-confirm-password" className="text-sm font-semibold text-slate-700">Confirm password</label>
+            <input id="store-confirm-password" type="password" autoComplete="new-password" value={confirmPassword} onChange={event => setConfirmPassword(event.target.value)} disabled={submitting} required className={fieldClass(errors.confirmPassword)} />
+            {errors.confirmPassword && <p role="alert" className="mt-1 text-xs text-red-600">{errors.confirmPassword}</p>}
+            <label className="mt-4 flex gap-2 text-sm text-slate-600"><input type="checkbox" checked={agreeTerms} onChange={event => setAgreeTerms(event.target.checked)} disabled={submitting} />I accept the Terms of Service and Privacy Policy.</label>
+            {errors.agreeTerms && <p role="alert" className="mt-1 text-xs text-red-600">{errors.agreeTerms}</p>}
           </div>
           <button
             type="submit"

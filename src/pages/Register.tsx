@@ -1,3 +1,5 @@
+import { authRequest, type SMSVerification } from '../lib/auth'
+import OTPVerification from './OTPVerification'
 import { useState, useEffect, useRef } from 'react'
 import { DEFAULT_PHONE_CODE, GHANA_REGIONS, formatCurrency, isValidGhanaPhoneNumber } from '../lib/localization'
 
@@ -29,14 +31,13 @@ type FieldErrors = Partial<Record<keyof FormData, string>>
 type PageState = 'form' | 'loading' | 'success' | 'error'
 
 const EMPTY: FormData = {
-  firstName: '', middleName: '', lastName: '', dob: '', gender: '', ghanaCard: '', nationality: 'Ghanaian',
+  firstName: '', middleName: '', lastName: '', dob: '', gender: '', ghanaCard: '', nationality: 'Ghana',
   phone: '', email: '', region: '', city: '', address: '',
   password: '', confirmPassword: '', agreeTerms: false, agreePrivacy: false, receiveUpdates: false,
 }
 
 const REGIONS = GHANA_REGIONS
-const NATIONALITIES = ['Ghanaian', 'Kenyan', 'South African', 'Nigerian', 'Other']
-const GENDERS = ['Male', 'Female', 'Prefer not to say']
+const GENDERS = ['Male', 'Female']
 
 const STEPS = ['Personal Info', 'Contact', 'Security', 'Review']
 
@@ -200,7 +201,10 @@ function Step1({ data, setData, errors }: { data: FormData; setData: (d: FormDat
         <SelectField label="Gender" value={data.gender} onChange={set('gender')} error={errors.gender} options={GENDERS} required/>
       </div>
       <div className="grid sm:grid-cols-2 gap-4">
-        <SelectField label="Nationality" value={data.nationality} onChange={set('nationality')} options={NATIONALITIES}/>
+        <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-2">
+          <label htmlFor="signup-nationality" className="block text-[10px] font-medium text-gray-500">Nationality</label>
+          <input id="signup-nationality" value="Ghana" readOnly className="w-full bg-transparent py-1 text-sm text-gray-900 outline-none" />
+        </div>
         <Field label="Ghana Card Number" value={data.ghanaCard} onChange={set('ghanaCard')} placeholder="GHA-123456789-0" hint="Leave blank for now — required for hire-purchase approval"/>
       </div>
     </div>
@@ -213,7 +217,7 @@ function Step2({ data, setData, errors }: { data: FormData; setData: (d: FormDat
   return (
     <div className="space-y-4">
       <Field label="Mobile Number" value={data.phone} onChange={set('phone')} error={errors.phone} required type="tel" placeholder={`e.g. ${DEFAULT_PHONE_CODE} 24 123 4567`}
-        hint="Must be a valid Ghanaian number. We'll send your OTP here."/>
+        hint="We will send an SMS verification code to this Ghanaian number."/>
       <Field label="Email Address" value={data.email} onChange={set('email')} error={errors.email} required type="email" placeholder="e.g. adaeze@email.com"/>
       <div className="grid sm:grid-cols-2 gap-4">
         <SelectField label="Region" value={data.region} onChange={set('region')} error={errors.region} options={REGIONS} required/>
@@ -435,7 +439,7 @@ function validateStep(step: number, data: FormData): FieldErrors {
     if (!data.firstName.trim()) errs.firstName = 'First name is required'
     if (!data.lastName.trim()) errs.lastName = 'Last name is required'
     if (!data.dob) errs.dob = 'Date of birth is required'
-    if (!data.gender) errs.gender = 'Please select a gender'
+    if (!GENDERS.includes(data.gender)) errs.gender = 'Please select Male or Female'
   }
   if (step === 1) {
     if (!data.phone.trim()) errs.phone = 'Mobile number is required'
@@ -458,11 +462,17 @@ function validateStep(step: number, data: FormData): FieldErrors {
 }
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
-export default function Register({ onBack, onBrowseStores, onBrowseProducts }: {
+export default function Register({ onBack, onBrowseStores, onBrowseProducts, onLogin, onRegisterStore }: {
   onBack: () => void
+  onRegisterStore: () => void
+  onLogin: () => void
   onBrowseStores: () => void
   onBrowseProducts: () => void
 }) {
+  const [serverError, setServerError] = useState('')
+  const [confirmationRequired, setConfirmationRequired] = useState(true)
+  const [verification, setVerification] = useState<SMSVerification | null>(null)
+  const [welcomeSent, setWelcomeSent] = useState(true)
   const [step, setStep] = useState(0)
   const [data, setData] = useState<FormData>({ ...EMPTY })
   const [errors, setErrors] = useState<FieldErrors>({})
@@ -489,15 +499,37 @@ export default function Register({ onBack, onBrowseStores, onBrowseProducts }: {
 
   const prev = () => { setErrors({}); setStep(s => s - 1); scrollToForm() }
 
+  const finishRegistration = async () => {
+    const { confirmPassword, ghanaCard, ...payload } = data
+    const result = await authRequest('signup', payload)
+    if (result.verification_required && result.verification) {
+      setVerification(result.verification)
+      setPageState('form')
+      return
+    }
+    setVerification(null)
+    setWelcomeSent(result.welcome_sms_sent !== false)
+    setConfirmationRequired(Boolean(result.confirmation_required))
+    setData(current => ({ ...current, password: '', confirmPassword: '' }))
+    setPageState('success')
+  }
   const submit = async () => {
+    if (pageState === 'loading') return
+    for (let index = 0; index < 3; index++) {
+      const errs = validateStep(index, data)
+      if (Object.keys(errs).length) { setErrors(errs); setStep(index); return }
+    }
     setPageState('loading')
-    await new Promise(r => setTimeout(r, 1800))
-    // Simulate 90% success
-    if (Math.random() > 0.1) setPageState('success')
-    else setPageState('error')
+    try {
+      await finishRegistration()
+    } catch (error) {
+      setServerError(error instanceof Error ? error.message : 'Unable to create your account.')
+      setPageState('error')
+    }
   }
 
   const NAV_LINKS = ['Home', 'Browse Stores', 'Browse Products', 'How It Works']
+  if (verification) return <OTPVerification verification={verification} onVerified={finishRegistration} onBack={() => { setVerification(null); setPageState('form') }} />
 
   // ── Success ────────────────────────────────────────────────────────────────
   if (pageState === 'success') {
@@ -509,12 +541,13 @@ export default function Register({ onBack, onBrowseStores, onBrowseProducts }: {
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
           </div>
-          <h2 className="text-2xl font-bold mb-2" style={{ color: '#101828' }}>Account Created!</h2>
+          <h2 className="text-2xl font-bold mb-2" style={{ color: '#101828' }}>Registration successful</h2>
           <p className="text-gray-500 text-sm mb-6 leading-relaxed">
-            Welcome to AdepaPay, <strong>{data.firstName}</strong>! Your account has been created successfully. Verify your phone number to start shopping.
+            Welcome to AdepaPay, <strong>{data.firstName}</strong>! Your phone number is verified. {confirmationRequired ? 'Check your email for a confirmation link, then return here to sign in.' : 'Your account is ready. Sign in to start shopping.'}
           </p>
-          <button className="w-full py-3.5 rounded-xl font-semibold text-sm text-white hover:opacity-90 transition-all mb-3" style={{ background: '#0B5FFF' }}>
-            Continue to OTP Verification
+          {!welcomeSent && <p role="status" className="mb-4 text-sm text-amber-700">Registration succeeded, but the welcome SMS could not be confirmed.</p>}
+          <button onClick={onLogin} className="w-full py-3.5 rounded-xl font-semibold text-sm text-white hover:opacity-90 transition-all mb-3" style={{ background: '#0B5FFF' }}>
+            Continue to sign in
           </button>
           <button onClick={onBrowseProducts} className="w-full py-3 rounded-xl font-semibold text-sm border-2 hover:bg-blue-50 transition-all" style={{ borderColor: '#0B5FFF', color: '#0B5FFF' }}>
             Browse Products
@@ -531,23 +564,8 @@ export default function Register({ onBack, onBrowseStores, onBrowseProducts }: {
         <div className="login-grid absolute inset-0" />
         <div className="relative z-10 w-full max-w-md rounded-[30px] border border-white/60 bg-white/95 p-8 text-center shadow-2xl">
           <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-red-600"><svg className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.3 3.8L2.5 17.3A2 2 0 004.2 20h15.6a2 2 0 001.7-2.7L13.7 3.8a2 2 0 00-3.4 0z"/></svg></div>
-          <h2 className="text-2xl font-bold text-slate-900">Unable to create account</h2><p className="mt-2 text-sm text-slate-500">Please check your details and try again.</p>
+          <h2 className="text-2xl font-bold text-slate-900">Unable to create account</h2><p className="mt-2 text-sm text-slate-500">{serverError}</p>
           <button onClick={() => setPageState('form')} className="mt-6 w-full rounded-xl bg-blue-600 py-3.5 text-sm font-bold text-white">Try again</button>
-        </div>
-      </div>
-    )
-  }
-
-  if (pageState === 'error') {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center" style={{ background: '#F8FAFC' }}>
-        <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-10 max-w-md w-full">
-          <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold mb-2" style={{ color: '#101828' }}>Unable to Create Account</h2>
-          <p className="text-gray-500 text-sm mb-6 leading-relaxed">Something went wrong on our end. Please check your details and try again.</p>
-          <button onClick={() => setPageState('form')} className="w-full py-3.5 rounded-xl font-semibold text-sm text-white hover:opacity-90 transition-all" style={{ background: '#0B5FFF' }}>
-            Try Again
-          </button>
         </div>
       </div>
     )
@@ -569,9 +587,10 @@ export default function Register({ onBack, onBrowseStores, onBrowseProducts }: {
           <div className="rounded-[30px] border border-white/60 bg-white/95 p-6 shadow-[0_30px_90px_rgba(0,0,0,0.35)] backdrop-blur-2xl sm:p-8">
             <div className="text-center">
               <button type="button" onClick={onBack}><img src="/images/adepa_pay_logo.png" alt="AdepaPay" className="mx-auto h-16 w-auto object-contain"/></button>
-              <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">Create your account</h1>
+              <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">Create your customer account</h1>
               <p className="mt-1 text-sm text-slate-500">A few details and you’re ready to get started.</p>
             </div>
+            <button type="button" onClick={onRegisterStore} disabled={isLoading} className="mt-5 w-full rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-700 disabled:opacity-50">Register as a store</button>
             <div className="mx-auto mt-7 max-w-xl"><Stepper current={step}/></div>
             <div className="mt-7 border-t border-slate-100 pt-6">
               <div className="mb-5 flex items-start gap-3">
@@ -599,220 +618,4 @@ export default function Register({ onBack, onBrowseStores, onBrowseProducts }: {
     </div>
   )
 
-  return (
-    <div className="min-h-screen font-sans" style={{ background: '#F8FAFC' }}>
-
-      {/* ── NAV ──────────────────────────────────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-30 transition-all duration-300"
-        style={{ background: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.9)', backdropFilter: 'blur(16px)', borderBottom: scrolled ? '1px solid rgba(0,0,0,0.06)' : '1px solid transparent', boxShadow: scrolled ? '0 4px 24px rgba(0,0,0,0.06)' : 'none' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-          <button onClick={onBack} className="flex items-center gap-3 flex-shrink-0">
-            <img src="/images/adepa_pay_logo.png" alt="AdepaPay" className="h-30 w-auto object-contain" />
-          </button>
-          <div className="hidden lg:flex items-center gap-1">
-            {NAV_LINKS.map(link => (
-              <a key={link} href="#" className="px-3.5 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                onClick={link === 'Home' ? (e) => { e.preventDefault(); onBack() }
-                  : link === 'Browse Stores' ? (e) => { e.preventDefault(); onBrowseStores() }
-                  : link === 'Browse Products' ? (e) => { e.preventDefault(); onBrowseProducts() }
-                  : undefined}>
-                {link}
-              </a>
-            ))}
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            <span className="text-sm text-gray-500">Already have an account?</span>
-            <button className="px-4 py-2 rounded-xl text-sm font-semibold border-2 hover:bg-blue-50 transition-all" style={{ borderColor: '#0B5FFF', color: '#0B5FFF' }}>Login</button>
-          </div>
-          <button className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              {mobileMenuOpen ? <><line x1="18" y1="6" x2="6" y2="18" strokeLinecap="round"/><line x1="6" y1="6" x2="18" y2="18" strokeLinecap="round"/></> : <><line x1="3" y1="12" x2="21" y2="12" strokeLinecap="round"/><line x1="3" y1="6" x2="21" y2="6" strokeLinecap="round"/><line x1="3" y1="18" x2="21" y2="18" strokeLinecap="round"/></>}
-            </svg>
-          </button>
-        </div>
-        <div className="md:hidden overflow-hidden transition-all duration-300 bg-white border-t border-gray-100" style={{ maxHeight: mobileMenuOpen ? '280px' : '0' }}>
-          <div className="px-4 py-4 flex flex-col gap-1">
-            {NAV_LINKS.map(link => <a key={link} href="#" className="px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50">{link}</a>)}
-            <div className="pt-3 border-t border-gray-100">
-              <button className="w-full py-2.5 rounded-xl text-sm font-semibold border-2" style={{ borderColor: '#0B5FFF', color: '#0B5FFF' }}>Login</button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* ── PAGE HEADER ──────────────────────────────────────────────────── */}
-      <div className="pt-16">
-        <div className="relative overflow-hidden py-10 px-4 sm:px-6 lg:px-8 text-center" style={{ background: 'linear-gradient(135deg, #0B5FFF 0%, #1E3A8A 100%)' }}>
-          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at center,rgba(255,255,255,0.5) 1px,transparent 1px)', backgroundSize: '24px 24px' }}/>
-          <div className="relative z-10 max-w-xl mx-auto">
-            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Create Your AdepaPay Account</h1>
-            <p className="text-blue-200 text-sm">Join AdepaPay today and enjoy flexible hire purchase from trusted stores.</p>
-          </div>
-        </div>
-      </div>
-
-      {/* ── MAIN ─────────────────────────────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="grid lg:grid-cols-[1fr_360px] gap-8 items-start">
-
-          {/* Wizard */}
-          <div ref={formRef}>
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-
-              {/* Stepper header */}
-              <div className="px-6 sm:px-8 pt-7 pb-6 border-b border-gray-100">
-                <Stepper current={step}/>
-              </div>
-
-              {/* Step title */}
-              <div className="px-6 sm:px-8 pt-6 pb-2">
-                <h2 className="text-xl font-bold" style={{ color: '#101828' }}>
-                  {['Personal Information', 'Contact Information', 'Security Setup', 'Review & Confirm'][step]}
-                </h2>
-                <p className="text-sm text-gray-400 mt-0.5">
-                  {[
-                    'Tell us a bit about yourself.',
-                    'How can we reach you?',
-                    'Secure your account with a strong password.',
-                    'Make sure everything looks correct before submitting.',
-                  ][step]}
-                </p>
-              </div>
-
-              {/* Form content */}
-              <div className="px-6 sm:px-8 py-6">
-                {pageState === 'loading' ? (
-                  <div className="space-y-4">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <div key={i} className="skeleton h-14 rounded-xl"/>
-                    ))}
-                    <div className="skeleton h-12 rounded-xl mt-2"/>
-                  </div>
-                ) : (
-                  <>
-                    {step === 0 && <Step1 data={data} setData={setData} errors={errors}/>}
-                    {step === 1 && <Step2 data={data} setData={setData} errors={errors}/>}
-                    {step === 2 && <Step3 data={data} setData={setData} errors={errors}/>}
-                    {step === 3 && <Step4 data={data} onEdit={setStep}/>}
-                  </>
-                )}
-              </div>
-
-              {/* Navigation buttons */}
-              {pageState !== 'loading' && (
-                <div className="px-6 sm:px-8 pb-7 flex flex-col sm:flex-row gap-3">
-                  {step > 0 && (
-                    <button onClick={prev} className="sm:w-32 py-3 rounded-xl text-sm font-semibold border-2 hover:bg-gray-50 transition-all order-2 sm:order-1" style={{ borderColor: '#E5E7EB', color: '#374151' }}>
-                      ← Previous
-                    </button>
-                  )}
-                  <div className="flex gap-3 flex-1 order-1 sm:order-2 justify-end">
-                    {step === 0 && (
-                      <button className="px-5 py-3 rounded-xl text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all">
-                        Save Progress
-                      </button>
-                    )}
-                    {step < 3 && (
-                      <button onClick={next} className="flex-1 sm:flex-none sm:px-8 py-3 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all" style={{ background: '#0B5FFF' }}>
-                        Next Step →
-                      </button>
-                    )}
-                    {step === 3 && (
-                      <button onClick={submit} className="flex-1 sm:flex-none sm:px-8 py-3 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all flex items-center justify-center gap-2" style={{ background: '#0B5FFF' }}>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Submit Registration
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Step progress text */}
-            <p className="text-center text-xs text-gray-400 mt-4">Step {step + 1} of {STEPS.length}</p>
-          </div>
-
-          {/* Sidebar */}
-          <div className="hidden lg:block">
-            <Sidebar/>
-          </div>
-        </div>
-
-        {/* ── BENEFITS ────────────────────────────────────────────────────── */}
-        <section className="mt-16">
-          <div className="text-center mb-8">
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#0B5FFF' }}>Why Join AdepaPay?</p>
-            <h2 className="text-2xl font-bold" style={{ color: '#101828' }}>Everything you get with your free account</h2>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { icon: '🏪', title: 'Browse Verified Stores', desc: 'Access 120+ vetted merchants across Ghana offering quality products.' },
-              { icon: '📦', title: 'Thousands of Products', desc: 'Explore 5,000+ products across electronics, furniture, fashion and more.' },
-              { icon: '💳', title: 'Flexible Hire Purchase', desc: 'Pay 20% deposit, take your product home, and spread the rest over 12 months.' },
-              { icon: '🔒', title: 'Secure Payments', desc: 'Bank-grade encryption on every transaction. Your money is always safe.' },
-              { icon: '📊', title: 'Track Installments', desc: 'View your payment schedule, upcoming due dates and ownership progress.' },
-              { icon: '⚡', title: 'Fast Approval', desc: 'Most hire purchase applications get a decision in under 2 minutes.' },
-            ].map(b => (
-              <div key={b.title} className="card-lift bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex gap-4 items-start">
-                <span className="text-3xl flex-shrink-0">{b.icon}</span>
-                <div>
-                  <h3 className="font-semibold text-sm text-gray-900 mb-1">{b.title}</h3>
-                  <p className="text-xs text-gray-500 leading-relaxed">{b.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── SECURITY STRIP ──────────────────────────────────────────────── */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-6 py-6 px-8 rounded-2xl border border-gray-100 bg-white">
-          {[
-            { icon: '🔒', text: '256-bit SSL Encryption' },
-            { icon: '🛡️', text: 'Ghana DPA Aligned' },
-            { icon: '✅', text: 'Verified Platform' },
-            { icon: '🏦', text: 'Bank-Grade Security' },
-          ].map(s => (
-            <div key={s.text} className="flex items-center gap-2 text-sm font-medium text-gray-600">
-              <span>{s.icon}</span>
-              {s.text}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
-      <footer className="mt-16 py-12 px-4 sm:px-6 lg:px-8" style={{ background: '#101828' }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <img src="/images/adepa_pay_logo.png" alt="AdepaPay" className="h-33 w-auto object-contain" />
-              </div>
-              <p className="text-sm text-gray-400 leading-relaxed mb-4">Ghana's premier hire purchase marketplace.</p>
-              <div className="flex gap-2">
-                <input type="email" placeholder="Your email" className="flex-1 px-3 py-2 rounded-xl text-xs bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"/>
-                <button className="px-3 py-2 rounded-xl text-xs font-semibold text-white" style={{ background: '#0B5FFF' }}>Go</button>
-              </div>
-            </div>
-            {[
-              { title: 'Company',   links: ['About', 'Browse Stores', 'Products', 'How It Works'] },
-              { title: 'Support',   links: ['Help Center', 'Privacy Policy', 'Terms & Conditions', 'FAQs'] },
-              { title: 'Contact',   links: ['hello@adepapay.com', '+233 30 200 0000', 'Accra, Ghana', 'Twitter / X'] },
-            ].map(col => (
-              <div key={col.title}>
-                <h4 className="text-sm font-semibold text-white mb-3">{col.title}</h4>
-                <ul className="space-y-2">{col.links.map(l => <li key={l}><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">{l}</a></li>)}</ul>
-              </div>
-            ))}
-          </div>
-          <div className="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-gray-500">© 2026 AdepaPay Technologies Ltd. All rights reserved.</p>
-            <div className="flex gap-2">
-              {['F','I','L','X'].map(s => <a key={s} href="#" className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-800 text-gray-400 hover:bg-blue-600 hover:text-white transition-all text-xs font-bold">{s}</a>)}
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  )
 }

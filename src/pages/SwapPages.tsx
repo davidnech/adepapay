@@ -84,7 +84,7 @@ type SwapData = {
 }
 
 const STORAGE_KEY = "adepapay.swap.demo.v2"
-const statuses: Record<SwapStatus, { label: string tone: string }> = {
+const statuses: Record<SwapStatus, { label: string; tone: string }> = {
   DRAFT: { label: "Draft", tone: "bg-slate-100 text-slate-700" },
   SUBMITTED: { label: "Submitted", tone: "bg-blue-50 text-blue-700" },
   UNDER_REVIEW: { label: "Under review", tone: "bg-amber-50 text-amber-700" },
@@ -801,7 +801,7 @@ export function SwapApplicationPage({
   )
 }
 
-function Summary({ label, value }: { label: string value: string }) {
+function Summary({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl bg-slate-50 p-4">
       <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
@@ -1813,7 +1813,7 @@ export function TradeInInventoryPage() {
             <div className="flex items-center justify-between">
               <h3 className="font-bold">{item.device}</h3>
               <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">
-                {item.status.replaceAll("_", " ")}
+                {item.status.replace(/_/g, " ")}
               </span>
             </div>
             <p className="mt-2 text-sm text-slate-500">
