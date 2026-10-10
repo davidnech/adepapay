@@ -6,6 +6,7 @@ RUN npm ci --include=dev
 COPY index.html vite.config.ts ./
 COPY .figma/make/site.json .figma/make/site.json
 COPY src ./src
+COPY scripts ./scripts
 COPY public ./public
 RUN npm run build
 

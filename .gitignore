@@ -1,4 +1,7 @@
 node_modules/
+
+# Local planning documents are not deployment inputs.
+/Updatesand fixes/
 dist/
 build/
 .cache/

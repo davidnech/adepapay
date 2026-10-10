@@ -7,6 +7,14 @@ The existing database remains in Supabase; no Render PostgreSQL service is neede
 
 ## 1. Prepare Supabase
 
+Before deployment, run `node scripts/check-public-assets.mjs`. Images under
+`public` must be real images, not Git LFS pointer text. If it lists missing
+assets, restore the original images from a backup into those exact paths.
+The Git attributes now store public assets in ordinary Git, avoiding a separate
+LFS upload. Commit restored files along with `.gitattributes`. The local
+`Updatesand fixes` planning folder is excluded from Git and the Docker context.
+Ignoring files in Docker alone does not fix a failing Git checkout.
+
 For an existing database with setup through migration 015, run
 `backend/migrations/016_performance_indexes.sql` in the Supabase SQL Editor.
 Then run `backend/migrations/017_signup_sms.sql` for SMS verification.

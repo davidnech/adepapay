@@ -144,3 +144,7 @@
 *.stl                filter=lfs diff=lfs merge=lfs -text
 *.nc                 filter=lfs diff=lfs merge=lfs -text
 *.mat                filter=lfs diff=lfs merge=lfs -text
+
+# Website assets are small enough for ordinary Git. Keep deployments independent
+# of a separate LFS upload. Existing pointers still need their original files.
+public/** -filter -diff -merge -text
