@@ -3,16 +3,10 @@
   "short_name": "AdepaPay",
   "icons": [
     {
-      "src": "/images/favicon/web-app-manifest-192x192.png",
-      "sizes": "192x192",
+      "src": "/images/adepa_pay_logo.png",
+      "sizes": "2000x2000",
       "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/images/favicon/web-app-manifest-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any"
     }
   ],
   "theme_color": "#ffffff",

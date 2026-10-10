@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="620" viewBox="0 0 560 620" role="img" aria-labelledby="title desc">
+  <title id="title">AdepaPay payment options</title>
+  <desc id="desc">An illustrated phone showing cash, hire purchase, layaway and swap options.</desc>
+  <defs>
+    <linearGradient id="back" x2="1" y2="1"><stop stop-color="#eff6ff"/><stop offset="1" stop-color="#dbeafe"/></linearGradient>
+    <linearGradient id="card" x2="1" y2="1"><stop stop-color="#0b5fff"/><stop offset="1" stop-color="#091b44"/></linearGradient>
+    <filter id="shadow" x="-40%" y="-30%" width="180%" height="180%"><feDropShadow dy="16" stdDeviation="16" flood-color="#091b44" flood-opacity=".18"/></filter>
+  </defs>
+  <circle cx="280" cy="310" r="248" fill="url(#back)"/>
+  <circle cx="465" cy="128" r="19" fill="#bfdbfe"/>
+  <circle cx="89" cy="459" r="12" fill="#99f6e4"/>
+  <g filter="url(#shadow)">
+    <rect x="142" y="36" width="276" height="548" rx="44" fill="#091b44"/>
+    <rect x="151" y="45" width="258" height="530" rx="36" fill="#f8fafc"/>
+    <rect x="230" y="45" width="100" height="24" rx="12" fill="#091b44"/>
+    <rect x="238" y="556" width="84" height="5" rx="2.5" fill="#cbd5e1"/>
+  </g>
+  <g font-family="Arial, sans-serif">
+    <text x="176" y="109" fill="#091b44" font-size="24" font-weight="700">AdepaPay</text>
+    <rect x="172" y="133" width="216" height="132" rx="20" fill="url(#card)"/>
+    <text x="190" y="165" fill="#bfdbfe" font-size="11" font-weight="700">SHOP ON YOUR TERMS</text>
+    <text x="190" y="195" fill="white" font-size="22" font-weight="700">Find your product.</text>
+    <text x="190" y="222" fill="white" font-size="18">Choose your option.</text>
+    <text x="172" y="300" fill="#091b44" font-size="16" font-weight="700">Ways to pay</text>
+    <rect x="172" y="317" width="216" height="46" rx="12" fill="#dbeafe"/>
+    <circle cx="197" cy="340" r="12" fill="#0b5fff"/><text x="197" y="345" text-anchor="middle" fill="white" font-size="13">1</text>
+    <text x="219" y="345" fill="#091b44" font-size="14" font-weight="700">Cash</text>
+    <rect x="172" y="374" width="216" height="46" rx="12" fill="#e0e7ff"/>
+    <circle cx="197" cy="397" r="12" fill="#4f46e5"/><text x="197" y="402" text-anchor="middle" fill="white" font-size="13">2</text>
+    <text x="219" y="402" fill="#091b44" font-size="14" font-weight="700">Hire purchase</text>
+    <rect x="172" y="431" width="216" height="46" rx="12" fill="#ccfbf1"/>
+    <circle cx="197" cy="454" r="12" fill="#0f766e"/><text x="197" y="459" text-anchor="middle" fill="white" font-size="13">3</text>
+    <text x="219" y="459" fill="#091b44" font-size="14" font-weight="700">Layaway</text>
+    <rect x="172" y="488" width="216" height="46" rx="12" fill="#ede9fe"/>
+    <circle cx="197" cy="511" r="12" fill="#7c3aed"/><text x="197" y="516" text-anchor="middle" fill="white" font-size="13">4</text>
+    <text x="219" y="516" fill="#091b44" font-size="14" font-weight="700">Swap</text>
+  </g>
+</svg>

@@ -15,6 +15,12 @@ LFS upload. Commit restored files along with `.gitattributes`. The local
 `Updatesand fixes` planning folder is excluded from Git and the Docker context.
 Ignoring files in Docker alone does not fix a failing Git checkout.
 
+The October 2026 asset repair recovered the existing AdepaPay brand PNG embedded
+in the intact favicon SVG. The website and touch/manifest icons use that mark;
+the missing phone images were replaced by `payment-options-phone.svg`. Old LFS
+pointer files were removed. The lost original phone graphics can be restored
+later if available; the current build does not need them.
+
 For an existing database with setup through migration 015, run
 `backend/migrations/016_performance_indexes.sql` in the Supabase SQL Editor.
 Then run `backend/migrations/017_signup_sms.sql` for SMS verification.
