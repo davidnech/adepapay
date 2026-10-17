@@ -1,18 +1,19 @@
 import FeaturedListings from './pages/FeaturedListings'
 import PublicInformation from './pages/PublicInformation'
 import { authRequest, AuthError, type AuthUser } from './lib/auth'
-import { useState, useEffect, useCallback } from "react"
+import { lazy, useState, useEffect, useCallback } from "react"
 import BrowseStores from "./pages/BrowseStores"
 import StoreDetails from "./pages/StoreDetails"
 import BrowseProducts from "./pages/BrowseProducts"
 import Register from "./pages/Register"
 import Login from "./pages/Login"
-import CustomerPortal from "./pages/CustomerPortal"
-import StoreBilling from "./pages/StoreBilling"
 import StoreRegistration from "./pages/StoreRegistration"
 import PublicNavbar from "./components/PublicNavbar"
+import AboutIntro from './components/AboutIntro'
 import Services from "./pages/ServicesRedesign"
-import FieldAgentPortal from "./pages/AgentAccount"
+const CustomerPortal=lazy(()=>import('./pages/CustomerPortal'))
+const StoreBilling=lazy(()=>import('./pages/StoreBilling'))
+const FieldAgentPortal=lazy(()=>import('./pages/AgentAccount'))
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 const FAQS = [
@@ -396,7 +397,7 @@ function MerchantIllustration() {
           </div>
           <div className="flex-1 mx-3">
             <div className="bg-gray-100 rounded px-3 py-1 text-xs text-gray-400 font-mono">
-              merchant.adepapay.ng
+              adepapay.com
             </div>
           </div>
         </div>
@@ -501,7 +502,7 @@ export default function App() {
   const [authLoading, setAuthLoading] = useState(true)
   const [authError, setAuthError] = useState('')
   const [page, setPage] = useState<Page>(() =>
-    window.location.pathname === "/services" ? "services" : "home",
+    window.location.pathname === "/services" ? "services" : window.location.pathname === "/register" ? "register" : window.location.pathname === "/store-registration" ? "store-registration" : ["/login", "/account"].includes(window.location.pathname) ? "login" : "home",
   )
 
   useEffect(() => {
@@ -859,6 +860,7 @@ function Landing({
           </div>
         </section>
 
+        <AboutIntro />
         {/* ── FEATURED STORES ───────────────────────────────────────────────── */}
         <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
@@ -1316,8 +1318,8 @@ function Landing({
                     {col.links.map((link) => (
                       <li key={link}>
                         <a
-                          href="#"
-                          onClick={(event)=>{event.preventDefault(); if(link==="Browse Stores")onNavigate("browse-stores");else if(["Browse Products","Products","Categories","Hire Purchase","New Arrivals"].includes(link))onNavigate("browse-products");else if(link==="Become a Partner")onNavigate("store-registration");else onInfo(link)}}
+                          href={link==='About'?'/about':'#'}
+                          onClick={(event)=>{if(link==='About')return;event.preventDefault(); if(link==="Browse Stores")onNavigate("browse-stores");else if(["Browse Products","Products","Categories","Hire Purchase","New Arrivals"].includes(link))onNavigate("browse-products");else if(link==="Become a Partner")onNavigate("store-registration");else onInfo(link)}}
                           className="text-sm text-gray-400 hover:text-white transition-colors"
                         >
                           {link}
@@ -1331,7 +1333,7 @@ function Landing({
 
             <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
               <p className="text-xs text-gray-500">
-                © 2026 AdepaPay Technologies Ltd. All rights reserved.
+                © 2026 <a href="https://bridgewaytec.com" className="underline underline-offset-4 hover:text-white">Bridgeway Technology Limited</a>. All rights reserved.
               </p>
 
             </div>

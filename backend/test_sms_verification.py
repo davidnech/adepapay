@@ -106,6 +106,8 @@ class SMSVerificationTests(unittest.TestCase):
         self.assertIsNotNone(self.http.get_cookie(ACCESS,path='/api/auth'))
         self.assertIsNone(self.http.get_cookie(COOKIE,path='/api/auth'))
         messages=[call.kwargs['json'] for call in self.send.call_args_list]
+        self.assertEqual(self.send.call_args.args[0],'https://viresender.com/v1/sms/send')
+        self.assertEqual(self.send.call_args.kwargs['headers']['Content-Type'],'application/json')
         self.assertEqual(len(messages),2)
         self.assertEqual(messages[0]['to'],'233241234567')
         self.assertTrue(all(message['sender_id']=='Adepapay' for message in messages))
@@ -158,6 +160,20 @@ class SMSVerificationTests(unittest.TestCase):
         self.assertIn('notice',result.json['verification'])
         self.assertNotIn('test-only-key',str(result.json))
         self.service.auth.sign_up.assert_not_called()
+
+    def test_provider_http_errors_explain_action_without_leaking_response(self):
+        for status,expected in ((307,'redirected'),(401,'authentication'),(403,'authentication'),
+                                (402,'wallet balance'),(429,'limiting'),(500,'HTTP 500')):
+            with self.subTest(status=status):
+                self.http.delete_cookie(COOKIE,path='/api/auth')
+                request=httpx.Request('POST','https://viresender.com/v1/sms/send')
+                response=httpx.Response(status,request=request,text='PRIVATE test-only-key 123456')
+                self.provider.raise_for_status.side_effect=httpx.HTTPStatusError('PRIVATE provider detail',request=request,response=response)
+                result=self.begin()
+                self.assertIn(expected,result.json['verification']['notice'])
+                for private in ('PRIVATE','test-only-key','123456'):
+                    self.assertNotIn(private,str(result.json))
+                self.service.auth.sign_up.assert_not_called()
 
     def test_failed_welcome_sms_does_not_undo_successful_registration(self):
         self.begin();self.verify()

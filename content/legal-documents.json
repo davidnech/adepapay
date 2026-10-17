@@ -1,0 +1,991 @@
+{
+  "privacy": {
+    "title": "Privacy Policy",
+    "source": "Privacy Policy.docx",
+    "blocks": [
+      {
+        "type": "title",
+        "text": "AdepaPay — Privacy Policy"
+      },
+      {
+        "type": "paragraph",
+        "text": "Oct 6, 2026 · @King David"
+      },
+      {
+        "type": "paragraph",
+        "text": "This Privacy Policy is provided by adepapay.com (“Adepapay”) and describes the collection, use, sharing, storage, and protection of your non-personal and personal information by Adepapay/Bridgeway Technology Limited."
+      },
+      {
+        "type": "paragraph",
+        "text": "In plain terms, “Adepapay” is the AdepaPay platform, accessible at adepapay.com, which is owned and operated by Bridgeway Technology Limited. This policy explains what information we gather about you — both personal information, which identifies you (such as your name or Ghana Card number), and non-personal information, which does not on its own identify you (such as aggregated usage statistics) — and how we collect it, what we use it for, who we share it with, how and where we store it, and the measures we take to protect it. We handle all such information in accordance with the Data Protection Act, 2012 (Act 843) of Ghana."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "How we handle Customer and Merchant information"
+      },
+      {
+        "type": "paragraph",
+        "text": "This overview summarises, in one place, how Bridgeway Technology Limited (operating as Adepapay, at adepapay.com) collects, uses, shares, stores and protects the personal and non-personal information of both Customers (people who acquire Goods on hire-purchase through the Platform) and Merchants (vendors who list and supply Goods through the Platform). The numbered sections that follow set out each matter in greater detail, and this overview is read subject to them."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "Collection"
+      },
+      {
+        "type": "list",
+        "items": [
+          "From Customers (personal): identity and KYC data (name, Ghana Card number, date of birth, photograph), contact details (postal and GhanaPost GPS address, telephone, email), payment and financial details (mobile money or bank account used for deposits and instalments), repayment and transaction history, and creditworthiness and risk-score data.",
+          "From Merchants (personal and business): business name and registration details, the identity and KYC details of owners and directors, contact and settlement details (bank or mobile money account), catalogue and listing data, and sales and settlement history.",
+          "Non-personal (both): device, log and usage data, approximate location, and aggregated or anonymised statistics that do not on their own identify you.",
+          "We collect information directly from you, automatically through your use of the Platform, and from third parties such as the National Identification Authority, the Registrar of Companies, Payment Partners and credit reference bureaux."
+        ]
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "Use"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Customer information is used to verify identity, enable hire-purchase applications, generate indicative affordability, credit and risk scores, process deposits, instalments and collections, issue statements and reminders, provide support, detect and prevent fraud, and meet legal obligations.",
+          "Merchant information is used to onboard and verify businesses, publish listings, provide merchant-enablement tools (catalogue, records and management features), process settlements, provide analytics, detect and prevent fraud, and meet tax and legal obligations.",
+          "Non-personal information is used to operate, secure, measure and improve the Platform.",
+          "We do not sell Customer or Merchant personal data."
+        ]
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "Sharing"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Customer data is shared with the Merchant and/or Finance Partner handling a hire-purchase application (relevant details and the verification outcome), with Payment Partners (such as Moolre) to process payments, with verification partners and credit reference bureaux, with service providers acting on our behalf, and with regulators or authorities where required by law.",
+          "Merchant data is shared with Customers transacting with the Merchant (the business and contact details needed to complete a transaction), with Payment Partners for settlement, with verification partners, with service providers, and with regulators or authorities where required by law.",
+          "Third parties who process data on our behalf are bound by confidentiality and may use the data only for the purposes we specify."
+        ]
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "Storage"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Customer and Merchant information is stored on controlled systems and may be hosted with reputable cloud or service providers, including providers located outside Ghana, in which case appropriate safeguards are applied consistent with the Data Protection Act, 2012 (Act 843).",
+          "We keep information only for as long as necessary for the purposes described in this policy and for the periods required by law (for example, anti-money-laundering and tax record-keeping). When no longer required, information is securely deleted, anonymised or de-identified."
+        ]
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "Protection"
+      },
+      {
+        "type": "list",
+        "items": [
+          "We apply reasonable technical and organisational measures to protect Customer and Merchant information against unauthorised access, loss, misuse, alteration or disclosure — including access controls and role-based permissions, encryption in transit, secure authentication, logging and monitoring, and staff confidentiality obligations.",
+          "Security is a shared responsibility: you must keep your Account credentials confidential. No system is completely secure, and in the event of a personal-data breach likely to affect you we will take the steps required by the Data Protection Act, 2012 (Act 843), including notifying the Data Protection Commission and affected individuals where required."
+        ]
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "At a glance"
+      },
+      {
+        "type": "paragraph",
+        "text": "This is a brief summary of how Adepapay/Bridgeway Technology Limited handles customers' data and personal and non-personal information. The full detail is in the numbered sections that follow."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Collection — what we gather. We collect the information needed to operate the Platform: identity and KYC details (including your Ghana Card number), contact details, account credentials, financial and transaction data, creditworthiness and risk-scoring data, and device and usage data. We gather it directly from you, automatically as you use the Platform, and from verification partners, Payment Partners and credit reference bureaux. (See Sections 3 and 4.)",
+          "Use — what we do with it. We use your information to verify your identity, operate the marketplace, generate verification and scoring tools, facilitate payments, provide merchant tools, communicate with you, prevent fraud, meet our legal obligations and improve our services. We do not sell your personal data. (See Sections 5 and 6.)",
+          "Sharing — who we give it to. We share your information only as needed: with Merchants and Finance Partners to complete the transactions you request, with licensed Payment Partners, with verification partners and credit reference bureaux, with service providers acting on our behalf under confidentiality obligations, and with regulators or authorities where the law requires. (See Section 7.)",
+          "Storage — how long and where we keep it. We keep your information only for as long as necessary for the purposes described, and for any longer period the law requires (for example, anti-money-laundering and tax records). Where information is stored or transferred outside Ghana, we apply appropriate safeguards. (See Sections 8 and 12.)",
+          "Protection — how we keep it safe. We apply reasonable technical and organisational safeguards — such as access controls, encryption in transit, secure authentication and monitoring — to protect your information, and we follow the breach-notification requirements of the Data Protection Act, 2012 (Act 843). (See Section 9.)"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "You hold rights over your personal data — including the rights to be informed, to access, to request correction or deletion, and to object — which are set out in Section 10."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "1. Who we are and about this policy"
+      },
+      {
+        "type": "paragraph",
+        "text": "1.1 AdepaPay is operated by Bridgeway Technology Limited (\"Bridgeway\", \"we\", \"us\" or \"our\"), a company incorporated in Ghana. For the purposes of the Data Protection Act, 2012 (Act 843), Bridgeway Technology Limited is the data controller responsible for the personal data processed through the AdepaPay platform."
+      },
+      {
+        "type": "paragraph",
+        "text": "1.2 This Privacy Policy explains what personal and non-personal information we collect, how and why we use it, with whom we share it, how long we keep it, how we protect it, and the rights you have in relation to it."
+      },
+      {
+        "type": "paragraph",
+        "text": "1.3 This policy should be read together with the AdepaPay Terms and Conditions. By using the Platform, you acknowledge that you have read and understood this policy."
+      },
+      {
+        "type": "paragraph",
+        "text": "1.4 We are registered with (or will register with) the Data Protection Commission of Ghana as a data controller. Our data-protection registration number is [DPC registration number]."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "2. Scope of this policy"
+      },
+      {
+        "type": "paragraph",
+        "text": "2.1 This policy applies to all Users of the Platform, including Customers, Business Buyers, Merchants and visitors, and to all personal and non-personal information we process in connection with the Platform."
+      },
+      {
+        "type": "paragraph",
+        "text": "2.2 The Platform connects you with Merchants, Finance Partners, Payment Partners and verification partners who are independent third parties. Where those parties process your information for their own purposes, they act as separate data controllers and their own privacy policies apply. We are not responsible for the privacy practices of third parties, and you should review their policies."
+      },
+      {
+        "type": "paragraph",
+        "text": "2.3 \"Personal data\" means information about an identified or identifiable individual. \"Non-personal information\" means information that does not, on its own, identify you, such as aggregated or anonymised statistics."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "3. Information we collect"
+      },
+      {
+        "type": "paragraph",
+        "text": "We collect the following categories of information:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Identity and verification data: your name, Ghana Card (National Identification) number, date of birth, gender, photograph, signature, and other identity details needed for KYC and verification.",
+          "Contact data: your postal address, GhanaPost GPS address, email address and telephone number.",
+          "Account data: your username, password and account settings.",
+          "Merchant and business data: for Merchants, business name, registration details, ownership and director information, and catalogue data.",
+          "Financial and transaction data: payment instrument details, mobile money or bank account details, deposits, instalments, repayment history, transaction records and related information, processed through our Payment Partners.",
+          "Creditworthiness data: affordability indications, credit scores and risk ratings, and information obtained from credit reference bureaux, where applicable.",
+          "Usage and device data: IP address, device identifiers, browser type, operating system, log data, pages viewed and interactions with the Platform.",
+          "Location data: approximate location derived from your address or device, where relevant to a service.",
+          "Communications: messages, enquiries and support requests you send to us."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "We collect only the information reasonably necessary for the purposes described in this policy. Some information is required to use the Platform; if you do not provide it, we may be unable to offer certain services."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "4. How we collect your information"
+      },
+      {
+        "type": "paragraph",
+        "text": "We collect information in three ways:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Directly from you — when you register, complete your profile, submit KYC documents, list Goods, apply for hire-purchase, make payments, or contact us.",
+          "Automatically — through cookies and similar technologies, and from your use of the Platform (device, log and usage data).",
+          "From third parties — including the National Identification Authority and other verification partners, the Registrar of Companies, credit reference bureaux, Payment Partners, Finance Partners, Merchants, and publicly available sources, in each case to the extent permitted by law."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Where you provide information about another person (for example, a guarantor or business associate), you confirm that you have their consent to do so."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "5. Our legal bases for processing"
+      },
+      {
+        "type": "paragraph",
+        "text": "Under the Data Protection Act, 2012 (Act 843), we process your personal data on one or more of the following legal bases:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Your consent — where you have agreed to a specific processing activity (which you may withdraw at any time).",
+          "Performance of a contract — where processing is necessary to provide the Platform and its services to you.",
+          "Compliance with a legal obligation — including KYC, anti-money-laundering, tax and regulatory requirements.",
+          "Our legitimate interests — including operating, securing and improving the Platform, preventing fraud and enforcing our Terms, provided these interests are not overridden by your rights.",
+          "Protection of your vital interests or the public interest — where applicable."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Where we rely on consent, we will make clear what you are consenting to and how to withdraw it."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "6. How we use your information"
+      },
+      {
+        "type": "paragraph",
+        "text": "We use your information to:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "create and administer your Account and verify your identity (KYC);",
+          "operate the marketplace and connect Customers, Merchants and Finance Partners;",
+          "provide verification, affordability and credit-scoring tools;",
+          "facilitate payments, deposits, instalments and collections through our Payment Partners;",
+          "provide merchant-enablement tools, including catalogue, records and management features;",
+          "communicate with you about your Account, transactions and support requests;",
+          "detect, prevent and investigate fraud, abuse and security incidents;",
+          "comply with legal, regulatory and tax obligations;",
+          "improve, personalise and develop the Platform and our services; and",
+          "send you service messages and, where permitted, marketing (which you can opt out of)."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "We do not sell your personal data."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "7. When and with whom we share your information"
+      },
+      {
+        "type": "paragraph",
+        "text": "We share your information only as needed and as permitted by law, with:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Merchants and Finance Partners — to enable transactions you request, such as sharing a Customer's relevant details and verification outcome with the Merchant or Finance Partner handling a hire-purchase application.",
+          "Payment Partners — licensed payment service providers (for example, Moolre) that process payments and collections.",
+          "Verification partners — including the National Identification Authority and identity-verification providers, to confirm your identity.",
+          "Credit reference bureaux — licensed under the Credit Reporting Act, 2007 (Act 726), for credit assessment and reporting, where applicable.",
+          "Service providers — hosting, analytics, communications, security and support providers who process data on our behalf under confidentiality obligations.",
+          "Regulators and authorities — where required by law, regulation, court order or lawful request, including the Bank of Ghana and the Data Protection Commission.",
+          "Successors — in connection with a merger, acquisition or reorganisation of Bridgeway Technology Limited, subject to this policy."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "We require third parties who process data on our behalf to protect it and to use it only for the purposes we specify. We do not authorise them to use your personal data for their own unrelated purposes."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "8. How long we keep your information"
+      },
+      {
+        "type": "paragraph",
+        "text": "8.1 We keep your personal data only for as long as necessary for the purposes for which it was collected, including to provide the Platform, to comply with legal, regulatory, tax and accounting obligations, and to resolve disputes and enforce our agreements."
+      },
+      {
+        "type": "paragraph",
+        "text": "8.2 Identity, KYC, transaction and financial records may be retained for the periods required by applicable law (for example, anti-money-laundering and tax record-keeping requirements), which may extend beyond the closure of your Account."
+      },
+      {
+        "type": "paragraph",
+        "text": "8.3 When your information is no longer required, we will securely delete, anonymise or de-identify it."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "9. How we protect your information"
+      },
+      {
+        "type": "paragraph",
+        "text": "9.1 We apply reasonable and appropriate technical and organisational measures to protect your personal data against unauthorised access, loss, misuse, alteration or disclosure. These may include access controls and role-based permissions, encryption in transit, secure authentication, logging and monitoring, and staff confidentiality obligations."
+      },
+      {
+        "type": "paragraph",
+        "text": "9.2 No system is completely secure. While we work to protect your information, we cannot guarantee absolute security, and you also play a role in keeping your Account safe by protecting your credentials."
+      },
+      {
+        "type": "paragraph",
+        "text": "9.3 In the event of a personal-data breach that is likely to affect you, we will take the steps required by the Data Protection Act, 2012 (Act 843), including notifying the Data Protection Commission and affected individuals where required."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "10. Your rights as a data subject"
+      },
+      {
+        "type": "paragraph",
+        "text": "Subject to the conditions and exceptions in the Data Protection Act, 2012 (Act 843), you have the right to:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "be informed about how your personal data is processed;",
+          "access the personal data we hold about you;",
+          "request correction of inaccurate or incomplete data;",
+          "request deletion or blocking of data where it is no longer required or is processed unlawfully;",
+          "object to processing, including for direct marketing;",
+          "withdraw consent where processing is based on consent;",
+          "prevent processing likely to cause unwarranted damage or distress; and",
+          "not be subject to a decision based solely on automated processing that significantly affects you, and to request information about such processing."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "To exercise any of these rights, contact us using the details in Clause 14. We may need to verify your identity before responding. We will respond within the time required by law. If you are not satisfied with our response, you may lodge a complaint with the Data Protection Commission of Ghana."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "11. Cookies and similar technologies"
+      },
+      {
+        "type": "paragraph",
+        "text": "11.1 We use cookies and similar technologies to operate the Platform, remember your preferences, keep you signed in, measure usage and improve our services."
+      },
+      {
+        "type": "paragraph",
+        "text": "11.2 Some cookies are strictly necessary for the Platform to function; others are optional (for example, analytics). Where required, we will seek your consent for non-essential cookies."
+      },
+      {
+        "type": "paragraph",
+        "text": "11.3 You can manage cookies through your browser settings. Disabling certain cookies may affect how the Platform works."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "12. Cross-border transfers, children, and changes"
+      },
+      {
+        "type": "paragraph",
+        "text": "12.1 Cross-border transfers. Where we transfer your personal data outside Ghana (for example, to a cloud-hosting or service provider), we will take reasonable steps to ensure it is protected to a standard consistent with the Data Protection Act, 2012 (Act 843), including through appropriate contractual safeguards."
+      },
+      {
+        "type": "paragraph",
+        "text": "12.2 Children. The Platform is intended for persons aged eighteen (18) and above. We do not knowingly collect personal data from children. If we become aware that we have collected such data without proper consent, we will delete it."
+      },
+      {
+        "type": "paragraph",
+        "text": "12.3 Changes to this policy. We may update this policy from time to time. We will post the updated policy on the Platform and change the effective date, and will notify you of material changes by reasonable means. Your continued use of the Platform after changes take effect indicates your acceptance of the updated policy."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "13. How we handle Customer and Merchant information"
+      },
+      {
+        "type": "paragraph",
+        "text": "This section brings together, in one place, how the activities described above apply to our two main groups of users — Customers and Merchants. It is a plain-language overview and is subject to the detailed provisions in the rest of this policy."
+      },
+      {
+        "type": "paragraph",
+        "text": "13.1 Collection — what we gather."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Customers: identity and KYC data (name, Ghana Card number, date of birth, photograph, contact details, GhanaPost GPS address); financial and transaction data (mobile money or bank details, deposits, instalments, repayment history); creditworthiness data (affordability indications, the Customer risk score and credit-bureau information); and device, usage, location and communications data.",
+          "Merchants: business identity (business name, registration, director and ownership details, tax details); settlement details (bank or mobile money accounts); catalogue and listing data; and transaction records."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "13.2 Use — why we process it."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Customers: to verify identity (KYC), connect you to Merchants and Finance Partners, generate verification, affordability and risk scores, facilitate payments and collections, administer hire-purchase records, provide support, prevent fraud, meet legal and tax obligations, and send service and permitted marketing messages.",
+          "Merchants: to onboard and verify the business, publish and manage listings, operate the catalogue and management tools, settle payments, provide analytics, run fraud and risk checks, and meet compliance obligations."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "13.3 Sharing — with whom."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Customers: with the Merchant or Finance Partner handling your application (relevant details and verification outcome), Payment Partners, verification partners, credit reference bureaux, service providers, and regulators or authorities where legally required.",
+          "Merchants: with Payment Partners for settlement, verification partners and the Registrar of Companies, service providers, and regulators or authorities where legally required.",
+          "As a neutral intermediary, AdepaPay shares only the information needed for the parties to transact, and does not sell personal data."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "13.4 Storage and retention — where and how long. Customer and Merchant information is held in Adepapay/Bridgeway systems and with cloud and service providers, which may be located outside Ghana under appropriate safeguards consistent with the Data Protection Act, 2012 (Act 843). We keep it only as long as necessary; identity, KYC, financial and transaction records may be retained for the periods required by anti-money-laundering and tax law, which can extend beyond account closure, after which it is securely deleted, anonymised or de-identified."
+      },
+      {
+        "type": "paragraph",
+        "text": "13.5 Protection — how we safeguard it. We apply reasonable technical and organisational measures for both Customers and Merchants, including access controls and role-based permissions, encryption in transit, secure authentication, logging and monitoring, and staff confidentiality obligations. Keeping account credentials secure is a shared responsibility, and in the event of a breach likely to affect you we follow the notification requirements of Act 843."
+      },
+      {
+        "type": "paragraph",
+        "text": "Both Customers and Merchants retain their data-subject rights under the Data Protection Act, 2012 (Act 843), as set out above."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "14. How to contact us"
+      },
+      {
+        "type": "paragraph",
+        "text": "If you have any question, request or complaint about this Privacy Policy or how we handle your personal data, please contact our Data Protection Officer:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Data controller: Bridgeway Technology Limited",
+          "Data Protection Officer: [name of DPO]",
+          "Email: [privacy/DPO email]",
+          "Postal address: [registered office address]",
+          "Telephone: [contact telephone]"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "You also have the right to lodge a complaint with the Data Protection Commission of Ghana if you believe your data-protection rights have been infringed."
+      },
+      {
+        "type": "paragraph",
+        "text": "Effective date: [effective date]."
+      }
+    ]
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "source": "Terms and Conditions.docx",
+    "blocks": [
+      {
+        "type": "title",
+        "text": "AdepaPay — Terms and Conditions"
+      },
+      {
+        "type": "paragraph",
+        "text": " Oct 6, 2026 · @King David"
+      },
+      {
+        "type": "paragraph",
+        "text": "These Terms and Conditions (the \"Terms\") govern your access to and use of the AdepaPay hire-purchase ecosystem, operated by Bridgeway Technology Limited. By registering for, accessing or using AdepaPay, you agree to be bound by these Terms. If you do not agree, you must not use the platform."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "1. Acceptance of these Terms"
+      },
+      {
+        "type": "paragraph",
+        "text": "1.1 These Terms form a legally binding agreement between you and Bridgeway Technology Limited (\"Bridgeway\", \"we\", \"us\" or \"our\"), the owner and operator of the AdepaPay platform (\"AdepaPay\" or the \"Platform\")."
+      },
+      {
+        "type": "paragraph",
+        "text": "1.2 By creating an account, accessing or using the Platform in any way, you confirm that you have read, understood and agree to be bound by these Terms, together with our Privacy Policy and any other policy, guideline or notice we publish on the Platform, all of which are incorporated by reference."
+      },
+      {
+        "type": "paragraph",
+        "text": "1.3 You may only use the Platform if you are at least eighteen (18) years of age and have the legal capacity to enter into a binding contract under the laws of Ghana. Where you use the Platform on behalf of a business or other entity, you represent that you are authorised to bind that entity, and \"you\" refers to that entity."
+      },
+      {
+        "type": "paragraph",
+        "text": "1.4 You acknowledge and agree that acceptance of these Terms by electronic means constitutes a valid, enforceable agreement under the Electronic Transactions Act, 2008 (Act 772), and you waive any objection to the enforceability of these Terms on the ground that they were entered into electronically."
+      },
+      {
+        "type": "paragraph",
+        "text": "1.5 If you do not agree with any part of these Terms, you must not register for or use the Platform."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "2. Definitions"
+      },
+      {
+        "type": "paragraph",
+        "text": "In these Terms, unless the context requires otherwise:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "\"AdepaPay\" / \"Platform\" means the AdepaPay hire-purchase ecosystem, including its website, mobile and web applications, interfaces, databases and related services, owned and operated by Bridgeway Technology Limited.",
+          "\"Customer\" means a user who browses, applies for or acquires Goods on hire-purchase terms through the Platform.",
+          "\"Business Buyer\" means a company, organisation or other business that purchases Goods from a Merchant through the Platform on a business-to-business (B2B) basis, including in bulk or for resale, onward supply or business use, whether for cash or on hire-purchase or trade-credit terms, and to whose contract with the Merchant AdepaPay is not a party.",
+          "\"Merchant\" means a vendor, retailer, dealer or supplier who lists and offers Goods for sale or hire-purchase through the Platform.",
+          "\"User\" means any person who accesses or uses the Platform, including Customers, Business Buyers, Merchants, Finance Partners and Insurance Partners.",
+          "\"Finance Partner\" means any licensed bank, savings and loans company, credit institution or other financier that provides credit or hire-purchase financing to a Customer in connection with a transaction facilitated through the Platform.",
+          "\"Insurance Partner\" means any licensed insurer, underwriter or insurance intermediary that offers or provides insurance cover (such as credit-life, asset or goods insurance) to a Customer, Merchant or Finance Partner in connection with a transaction facilitated through the Platform, and to whose contract of insurance AdepaPay is not a party.",
+          "\"Goods\" means the products, items or merchandise listed by a Merchant on the Platform.",
+          "\"Hire-Purchase Agreement\" means the agreement for the acquisition of Goods on hire-purchase or instalment terms entered into directly between a Customer or Business Buyer and a Merchant and/or Finance Partner, to which AdepaPay is not a party.",
+          "\"Payment Facilitation Services\" means the processing of payments and collections through one or more licensed third-party payment service providers integrated with the Platform.",
+          "\"Payment Partner\" means a third-party payment service provider licensed by the Bank of Ghana (for example, Moolre) through which payments and collections are processed.",
+          "\"Verification and Scoring Services\" means the identity verification, affordability indication and credit-scoring tools made available through the Platform.",
+          "\"Content\" means all data, text, images, software, designs and other materials made available on or through the Platform.",
+          "\"Account\" means a registered user profile on the Platform."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Words in the singular include the plural and vice versa, and references to a statute include any amendment or re-enactment of it."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "3. The role and legal status of AdepaPay"
+      },
+      {
+        "type": "paragraph",
+        "text": "3.1 AdepaPay is a neutral technology intermediary. AdepaPay provides an online marketplace and a set of enabling services that connect Customers, Merchants and Finance Partners and allow them to transact with one another. AdepaPay operates in four capacities only: (a) marketplace operator, providing the venue and tools through which Merchants list Goods and Customers discover and apply for them; (b) verification and scoring platform, providing identity-verification and indicative credit-scoring tools; (c) payment facilitator, enabling payments and collections to be processed through licensed Payment Partners; and (d) merchant enablement platform, providing onboarding, catalogue, record-keeping and management tools to Merchants."
+      },
+      {
+        "type": "paragraph",
+        "text": "3.2 What AdepaPay is NOT. AdepaPay, and Bridgeway Technology Limited, is not and does not act as any of the following, and nothing on the Platform shall be construed to the contrary:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "a seller, vendor, dealer, manufacturer, importer or supplier of any Goods;",
+          "the owner, bailor or lessor of any Goods offered on hire-purchase;",
+          "a lender, creditor, financier or provider of credit;",
+          "an insurer, underwriter or guarantor of any transaction, Customer, Merchant or Finance Partner;",
+          "a bank, deposit-taking institution or holder of customer funds;",
+          "a party to any Hire-Purchase Agreement, sale, credit agreement or other contract formed between Users; or",
+          "the agent, partner, employee or representative of any User."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "3.3 Contracts are between Users. Every Hire-Purchase Agreement, contract of sale, credit agreement or other transaction entered into through the Platform is formed directly and exclusively between the relevant Customer and the relevant Merchant and/or Finance Partner. AdepaPay is not a party to, and assumes no rights, obligations or liability under, any such contract. The Customer and the Merchant (and any Finance Partner) are solely responsible for the formation, terms, performance, enforcement, variation and termination of their contract."
+      },
+      {
+        "type": "paragraph",
+        "text": "3.4 No responsibility for Users or Goods. AdepaPay does not manufacture, inspect, own, store, deliver, install or control any Goods, and does not guarantee the existence, quality, safety, legality, fitness for purpose, title, description or availability of any Goods, nor the identity, solvency, honesty, conduct, capacity or ability to perform of any User. AdepaPay does not endorse any User, Goods or listing."
+      },
+      {
+        "type": "paragraph",
+        "text": "3.5 Introductions only. Any matching, ranking, recommendation, eligibility indication or introduction generated by the Platform is provided solely to facilitate connections between Users and does not constitute advice, a recommendation to transact, a solicitation, or an assurance that any transaction will be approved, completed or honoured."
+      },
+      {
+        "type": "paragraph",
+        "text": "3.6 Independent decisions. Each User transacts on the Platform on the basis of its own independent judgement and due diligence. Users are encouraged to verify information independently and to obtain their own legal, financial and other professional advice before entering into any transaction."
+      },
+      {
+        "type": "paragraph",
+        "text": "3.7 This Clause 3 is fundamental to these Terms, and the allocation of risk and responsibility it sets out is reflected in the fees charged and underlies the disclaimers, limitations of liability and indemnities below."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "4. Eligibility, registration and account security"
+      },
+      {
+        "type": "paragraph",
+        "text": "4.1 To use most features of the Platform you must register for an Account and provide accurate, current and complete information. You agree to keep that information up to date."
+      },
+      {
+        "type": "paragraph",
+        "text": "4.2 You represent and warrant that all information you provide is true and that you are not barred from using the Platform under the laws of Ghana or any other applicable law."
+      },
+      {
+        "type": "paragraph",
+        "text": "4.3 You are responsible for maintaining the confidentiality of your Account credentials and for all activity that occurs under your Account. You must notify us immediately of any unauthorised use or suspected breach of security."
+      },
+      {
+        "type": "paragraph",
+        "text": "4.4 We may refuse registration, suspend or close any Account, or restrict access to the Platform, at our discretion, including where we reasonably suspect fraud, a breach of these Terms, or a risk to other Users or to the integrity of the Platform."
+      },
+      {
+        "type": "paragraph",
+        "text": "4.5 You may not create an Account using false identity information, create more than one Account for an improper purpose, or allow any other person to use your Account."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "5. Identity verification, KYC and the Ghana Card"
+      },
+      {
+        "type": "paragraph",
+        "text": "5.1 To comply with applicable law and to reduce fraud, we operate know-your-customer (\"KYC\") and identity-verification processes. You agree to provide, and authorise us to collect and verify, identity and other information, which may include your Ghana Card (National Identification) number, name, date of birth, contact details, address, photograph, and, for Merchants, business registration and ownership details."
+      },
+      {
+        "type": "paragraph",
+        "text": "5.2 You authorise us and our verification partners to verify the information you provide against the records of the National Identification Authority, the Registrar of Companies, Payment Partners, credit reference bureaux and other lawful sources, in accordance with our Privacy Policy and the Data Protection Act, 2012 (Act 843)."
+      },
+      {
+        "type": "paragraph",
+        "text": "5.3 You warrant that any identity document or information you submit is genuine, belongs to you (or to the entity you are authorised to represent) and is provided with the necessary consent."
+      },
+      {
+        "type": "paragraph",
+        "text": "5.4 We may decline to verify, suspend or terminate any Account, or decline to facilitate any transaction, where verification cannot be completed, where information appears inaccurate or fraudulent, or where we are required to do so by law or by a Payment Partner or Finance Partner."
+      },
+      {
+        "type": "paragraph",
+        "text": "5.5 Completion of verification by AdepaPay confirms only that our processes were applied; it is not a guarantee of any User's identity, honesty, solvency or conduct, and does not transfer to AdepaPay any responsibility that rests with the Users to a transaction."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "6. The marketplace and hire-purchase transactions"
+      },
+      {
+        "type": "paragraph",
+        "text": "6.1 The Platform allows Merchants to list Goods and to offer them for acquisition on hire-purchase or instalment terms, and allows Customers to discover Goods, apply for hire-purchase, and manage repayments."
+      },
+      {
+        "type": "paragraph",
+        "text": "6.2 Listings, prices, deposit amounts, instalment schedules, interest or service charges, tenor and all other commercial terms are set by the Merchant and/or Finance Partner, not by AdepaPay. AdepaPay does not set, control or guarantee any such terms."
+      },
+      {
+        "type": "paragraph",
+        "text": "6.3 When a Customer's application is accepted, a Hire-Purchase Agreement is formed directly between the Customer and the Merchant and/or Finance Partner. That agreement, and not these Terms, governs ownership of and title to the Goods, the passing of risk, delivery, the repayment obligation, default, repossession and all other matters between those parties. Such agreements are subject to the applicable laws of Ghana, including the Hire-Purchase Decree, 1974 (NRCD 292) and, where relevant, the Borrowers and Lenders Act, 2020 (Act 1052)."
+      },
+      {
+        "type": "paragraph",
+        "text": "6.4 AdepaPay provides tools to record and administer these transactions (such as schedules, reminders and statements) purely as a convenience. The accuracy of any underlying commercial terms, and performance of the agreement, remain the responsibility of the transacting parties."
+      },
+      {
+        "type": "paragraph",
+        "text": "6.5 Any dispute concerning Goods or a Hire-Purchase Agreement — including quality, delivery, defects, non-payment, repossession or cancellation — is a matter between the Customer and the Merchant and/or Finance Partner; any dispute concerning a refund is a matter between the Customer and the Merchant. AdepaPay is not responsible for resolving such disputes and is not liable for their outcome, although we may, at our discretion and without obligation, provide tools or information to assist the parties."
+      },
+      {
+        "type": "paragraph",
+        "text": "6.6 Business Buyers. The Platform is also available to Business Buyers — companies, organisations and other businesses that acquire Goods from Merchants on a business-to-business basis, including on hire-purchase. These Terms apply to a Business Buyer in the same way as to a Customer, and a reference to a Customer applies equally to a Business Buyer except where the context requires otherwise. Any contract for the acquisition of Goods by a Business Buyer is formed directly between the Business Buyer and the Merchant, to which AdepaPay is not a party, and the Business Buyer is solely responsible for its own creditworthiness, authority to contract and performance of that contract."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "7. Verification, scoring and credit assessment"
+      },
+      {
+        "type": "paragraph",
+        "text": "7.1 The Platform may generate identity-verification results, affordability indications and credit scores or risk ratings in relation to Customers, using information supplied by the User and obtained from third-party licensed under the Credit Reporting Act, 2007 (Act 726)."
+      },
+      {
+        "type": "paragraph",
+        "text": "7.2 Customer risk score. Following a Customer's first purchase on the Platform, AdepaPay may generate and periodically update a Customer risk score that reflects the Customer's transaction history and payment behaviour on the Platform, including the timeliness of deposits and instalment repayments, any defaults, and other conduct. Such a score is indicative only, is subject to the limitations set out in this Clause, and may be made available to Merchants and Finance Partners to inform their own independent decisions."
+      },
+      {
+        "type": "paragraph",
+        "text": "7.3 Indicative only. Any score, rating, eligibility indication or affordability result is an automated, indicative tool only. It is not a credit decision, financial advice, a recommendation, a guarantee of creditworthiness, or an assurance that a Customer will perform, nor that a Merchant or Finance Partner will approve or complete any transaction."
+      },
+      {
+        "type": "paragraph",
+        "text": "7.4 Decisions rest with the parties. Any decision to extend credit, approve a hire-purchase application, deliver Goods, or transact on any terms is made solely by the Merchant and/or Finance Partner in their own discretion and at their own risk. AdepaPay does not make, and is not responsible for, any such decision."
+      },
+      {
+        "type": "paragraph",
+        "text": "7.5 AdepaPay does not warrant that scores or verification results are accurate, complete, current or error-free, and (subject to applicable law) accepts no liability for any loss arising from reliance on them. Information obtained from third-party sources is provided by those sources, and AdepaPay is not responsible for its accuracy."
+      },
+      {
+        "type": "paragraph",
+        "text": "7.6 Where automated processing is used, Customers have the rights afforded to data subjects under the Data Protection Act, 2012 (Act 843), as described in our Privacy Policy, including the right to request information about such processing."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "8. Payment facilitation"
+      },
+      {
+        "type": "paragraph",
+        "text": "8.1 Payments, deposits, instalments and collections on the Platform are processed through one or more Payment Partners licensed by the Bank of Ghana under the Payment Systems and Services Act, 2019 (Act 987), including Moolre. AdepaPay integrates these services but does not itself provide banking, deposit-taking or money-transmission services."
+      },
+      {
+        "type": "paragraph",
+        "text": "8.2 AdepaPay does not hold your funds as a bank. Funds are processed, held and settled by the relevant Payment Partner in accordance with that partner's own terms and its regulatory obligations. Your use of Payment Facilitation Services is subject to the Payment Partner's terms."
+      },
+      {
+        "type": "paragraph",
+        "text": "8.3 You authorise AdepaPay and the relevant Payment Partner to initiate the payment instructions necessary to give effect to your transactions, including deposits, instalment collections and refunds, which AdepaPay will process to the Customer through its Payment Partner once the Merchant (store or company) has initiated them."
+      },
+      {
+        "type": "paragraph",
+        "text": "8.4 AdepaPay is not responsible or liable for the acts, omissions, delays, failures, downtime, charges or insolvency of any Payment Partner, mobile money operator, bank or card network, or for any failed, delayed, duplicated or misdirected payment not caused by AdepaPay's own wilful default."
+      },
+      {
+        "type": "paragraph",
+        "text": "8.5 You are responsible for ensuring that payment instrument and account details you provide are accurate and that you are authorised to use them. We may decline or reverse transactions that we reasonably suspect to be fraudulent, unauthorised or in breach of law."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "9. Merchant terms and obligations"
+      },
+      {
+        "type": "paragraph",
+        "text": "If you use the Platform as a Merchant, the following additional terms apply."
+      },
+      {
+        "type": "paragraph",
+        "text": "9.1 You are solely responsible for the Goods you list, for the accuracy of your listings and pricing, and for the lawful sale and supply of those Goods. You warrant that you have good title to the Goods and the right to sell or let them on hire-purchase."
+      },
+      {
+        "type": "paragraph",
+        "text": "9.2 You warrant that each listing, and each Hire-Purchase Agreement you enter into, complies with all applicable laws, including the Hire-Purchase Decree, 1974 (NRCD 292), the Sale of Goods Act, 1962 (Act 137), the Borrowers and Lenders Act, 2020 (Act 1052) where applicable, and all consumer-protection, tax and licensing requirements."
+      },
+      {
+        "type": "paragraph",
+        "text": "9.3 You are responsible for delivery, quality, warranties, after-sales service, repossession (where lawful) and the handling of Customer complaints and disputes relating to your Goods and agreements. AdepaPay bears none of these responsibilities."
+      },
+      {
+        "type": "paragraph",
+        "text": "9.4 You will not list prohibited, counterfeit, stolen, unsafe or unlawful Goods, and you will honour the terms you advertise."
+      },
+      {
+        "type": "paragraph",
+        "text": "9.5 You grant AdepaPay a non-exclusive, royalty-free licence to display your listings, trade name and logo on the Platform for the purpose of operating the marketplace."
+      },
+      {
+        "type": "paragraph",
+        "text": "9.6 You are responsible for your own tax obligations, including any value added tax, levies and income tax arising from your transactions, and for issuing valid invoices and receipts to Customers."
+      },
+      {
+        "type": "paragraph",
+        "text": "9.7 You will indemnify AdepaPay and Bridgeway Technology Limited as set out in Clause 14 in respect of your Goods, listings, agreements and conduct."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "10. Fees and charges"
+      },
+      {
+        "type": "paragraph",
+        "text": "10.1 AdepaPay may charge fees for the use of the Platform and its services, including listing, subscription, transaction, facilitation, verification or scoring fees. Applicable fees will be disclosed to you before you incur them or as set out in a separate schedule or agreement."
+      },
+      {
+        "type": "paragraph",
+        "text": "10.2 Unless stated otherwise, fees are exclusive of any taxes, levies or charges imposed by law, which are payable by you in addition."
+      },
+      {
+        "type": "paragraph",
+        "text": "10.3 Payment Partners, banks and mobile money operators may impose their own charges, which are outside AdepaPay's control and for which AdepaPay is not responsible."
+      },
+      {
+        "type": "paragraph",
+        "text": "10.4 We may change our fees from time to time in accordance with Clause 17. Continued use of the Platform after a fee change takes effect constitutes acceptance of the revised fees."
+      },
+      {
+        "type": "paragraph",
+        "text": "10.5 Except as required by law or expressly stated, fees paid are non-refundable."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "11. Acceptable use and prohibited conduct"
+      },
+      {
+        "type": "paragraph",
+        "text": "11.1 You agree to use the Platform only for lawful purposes and in accordance with these Terms. You must not:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "breach any applicable law, regulation or third-party right;",
+          "provide false, misleading or fraudulent information, or impersonate any person;",
+          "use the Platform to launder money, finance terrorism, or facilitate any fraud or illegal scheme;",
+          "list or transact in prohibited, counterfeit, stolen or unlawful Goods;",
+          "interfere with, disrupt, probe or attempt to gain unauthorised access to the Platform, its systems or other Users' accounts;",
+          "introduce malware, conduct scraping, data-mining or automated extraction, or copy, reverse engineer or create derivative works from the Platform (see the Copyright and Intellectual Property Notice);",
+          "circumvent our fees, verification or security measures, or transact off-Platform to avoid obligations;",
+          "harass, defame, threaten or harm other Users; or",
+          "use the Platform in any way that damages AdepaPay's reputation or that of Bridgeway Technology Limited."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "11.2 We may investigate suspected breaches and may suspend or terminate access, remove content, report to the authorities and take any other action we consider appropriate."
+      },
+      {
+        "type": "paragraph",
+        "text": "11.3 You are responsible for all content and information you submit and warrant that you have the right to submit it."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "12. Intellectual property"
+      },
+      {
+        "type": "paragraph",
+        "text": "12.1 The Platform and all of its underlying system design, architecture, software, source code, databases, interfaces, text, graphics, logos, trade marks and other Content are owned by Bridgeway Technology Limited or its licensors and are protected by the Copyright Act, 2005 (Act 690), the Trade Marks Act, 2004 (Act 664) and other applicable intellectual-property laws. These rights are described more fully in the Copyright and Intellectual Property Notice, which forms part of these Terms."
+      },
+      {
+        "type": "paragraph",
+        "text": "12.2 Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable, revocable licence to access and use the Platform for its intended purpose. No other rights are granted."
+      },
+      {
+        "type": "paragraph",
+        "text": "12.3 You must not copy, reproduce, modify, distribute, sell, licence, reverse engineer, decompile, extract or create derivative works from any part of the Platform or its Content, except to the limited extent permitted by law or with our prior written consent."
+      },
+      {
+        "type": "paragraph",
+        "text": "12.4 Any feedback or suggestions you provide may be used by us without restriction or obligation to you."
+      },
+      {
+        "type": "paragraph",
+        "text": "12.5 \"AdepaPay\", the AdepaPay logo and related marks are trade marks of Bridgeway Technology Limited. You may not use them without our prior written permission."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "13. Disclaimers, warranties and limitation of liability"
+      },
+      {
+        "type": "paragraph",
+        "text": "13.1 Platform provided \"as is\". To the fullest extent permitted by law, the Platform and all services are provided on an \"as is\" and \"as available\" basis, without warranties of any kind, whether express or implied, including any implied warranties of merchantability, fitness for a particular purpose, accuracy, non-infringement, or uninterrupted or error-free operation."
+      },
+      {
+        "type": "paragraph",
+        "text": "13.2 No warranty as to Users, Goods or transactions. We do not warrant or guarantee the identity, conduct, solvency or performance of any User, the existence, quality, safety, legality or fitness of any Goods, the terms, formation, performance or enforceability of any Hire-Purchase Agreement or other contract, the accuracy of any verification result, score or listing, or the outcome of any transaction."
+      },
+      {
+        "type": "paragraph",
+        "text": "13.3 Exclusion of liability for Users' dealings. To the fullest extent permitted by law, AdepaPay and Bridgeway Technology Limited shall have no liability arising out of or in connection with any transaction, contract, dealing or dispute between Users, including any loss arising from a Merchant's Goods or default, a Customer's default, a Finance Partner's decisions, or the acts or omissions of any Payment Partner or other third party."
+      },
+      {
+        "type": "paragraph",
+        "text": "13.4 Exclusion of indirect loss. To the fullest extent permitted by law, AdepaPay and Bridgeway Technology Limited shall not be liable for any indirect, incidental, special, consequential, exemplary or punitive loss, or for any loss of profit, revenue, business, goodwill, data, anticipated savings or opportunity, however arising, whether in contract, tort (including negligence), statute or otherwise, even if advised of the possibility of such loss."
+      },
+      {
+        "type": "paragraph",
+        "text": "13.5 Liability cap. To the fullest extent permitted by law, the total aggregate liability of AdepaPay and Bridgeway Technology Limited to any User, arising out of or in connection with the Platform and these Terms in any twelve (12) month period, whether in contract, tort or otherwise, shall not exceed the total fees actually paid by that User to AdepaPay in respect of the Platform during that period, or one thousand Ghana Cedis (GH₵1,000), whichever is lower."
+      },
+      {
+        "type": "paragraph",
+        "text": "13.6 Force majeure. AdepaPay is not liable for any failure or delay in performance caused by events beyond its reasonable control, including acts of God, outages, telecommunications or power failures, failures of Payment Partners or third-party systems, pandemics, strikes, or governmental action."
+      },
+      {
+        "type": "paragraph",
+        "text": "13.7 Non-excludable rights. Nothing in these Terms excludes or limits any liability that cannot lawfully be excluded or limited under the laws of Ghana, including liability for fraud or for death or personal injury caused by proven negligence. Where liability cannot be excluded but can be limited, it is limited to the maximum extent permitted by law."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "14. Indemnification"
+      },
+      {
+        "type": "paragraph",
+        "text": "14.1 You agree to indemnify, defend and hold harmless AdepaPay, Bridgeway Technology Limited and their directors, officers, employees, agents and affiliates (the \"Indemnified Parties\") from and against any and all claims, demands, actions, proceedings, losses, liabilities, damages, costs and expenses (including reasonable legal fees) arising out of or in connection with:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "your use of or access to the Platform;",
+          "your breach of these Terms or of any applicable law;",
+          "any Goods you list, sell, supply or acquire, and any Hire-Purchase Agreement or other contract to which you are a party;",
+          "any content or information you submit;",
+          "any dispute between you and another User or any third party; and",
+          "your violation of any right of a third party, including intellectual-property, privacy or consumer rights."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "14.2 This indemnity is in addition to, and does not limit, any other right or remedy available to the Indemnified Parties, and survives termination of these Terms."
+      },
+      {
+        "type": "paragraph",
+        "text": "14.3 We may, at our option and at your expense, assume the exclusive defence and control of any matter subject to indemnification by you, in which case you agree to cooperate with us."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "15. Suspension and termination"
+      },
+      {
+        "type": "paragraph",
+        "text": "15.1 You may stop using the Platform and close your Account at any time, subject to settling any outstanding obligations."
+      },
+      {
+        "type": "paragraph",
+        "text": "15.2 We may suspend, restrict or terminate your access to the Platform, in whole or in part, with or without notice, where: you breach these Terms; we reasonably suspect fraud, unlawful conduct or a risk to the Platform or other Users; verification cannot be completed; we are required to do so by law, a regulator, a Payment Partner or a Finance Partner; or we discontinue the Platform or a service."
+      },
+      {
+        "type": "paragraph",
+        "text": "15.3 Termination does not affect any rights, obligations or liabilities that accrued before termination, nor any Hire-Purchase Agreement or other contract already formed between Users, which continues to be governed by its own terms."
+      },
+      {
+        "type": "paragraph",
+        "text": "15.4 Clauses that by their nature should survive termination — including Clauses 3, 12, 13, 14, 16 and 17 — survive."
+      },
+      {
+        "type": "paragraph",
+        "text": "15.5 On termination, the licence granted to you under Clause 12 ends immediately and you must cease using the Platform."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "16. Governing law and dispute resolution"
+      },
+      {
+        "type": "paragraph",
+        "text": "16.1 These Terms, and any dispute or claim arising out of or in connection with them or their subject matter (including non-contractual disputes), are governed by and construed in accordance with the laws of the Republic of Ghana."
+      },
+      {
+        "type": "paragraph",
+        "text": "16.2 Negotiation. The parties will first attempt in good faith to resolve any dispute arising between a User and AdepaPay through direct negotiation within thirty (30) days of written notice of the dispute."
+      },
+      {
+        "type": "paragraph",
+        "text": "16.3 Mediation and arbitration. If the dispute is not resolved by negotiation, it shall be referred to mediation and, failing resolution, to arbitration, in each case in accordance with the Alternative Dispute Resolution Act, 2010 (Act 798). The seat of arbitration shall be Accra, Ghana, the language shall be English, and the arbitral award shall be final and binding on the parties."
+      },
+      {
+        "type": "paragraph",
+        "text": "16.4 Courts. Nothing in this Clause prevents either party from seeking urgent injunctive or interim relief from the courts of Ghana, which shall have exclusive jurisdiction over any matter not finally resolved by arbitration."
+      },
+      {
+        "type": "paragraph",
+        "text": "16.5 Disputes between Users (for example, between a Customer and a Merchant) are to be resolved between those Users and are not subject to this Clause, as AdepaPay is not a party to them."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "17. Changes, general provisions and contact"
+      },
+      {
+        "type": "paragraph",
+        "text": "17.1 Changes to these Terms. We may amend these Terms from time to time. We will post the revised Terms on the Platform and update the effective date. Material changes will be notified to you by reasonable means. Your continued use of the Platform after changes take effect constitutes acceptance of the revised Terms."
+      },
+      {
+        "type": "paragraph",
+        "text": "17.2 Notices. We may give notices through the Platform, by email or by other reasonable means using the contact details associated with your Account. You are responsible for keeping those details current."
+      },
+      {
+        "type": "paragraph",
+        "text": "17.3 Assignment. You may not assign or transfer your rights or obligations under these Terms without our prior written consent. We may assign our rights and obligations, including to an affiliate or successor of Bridgeway Technology Limited."
+      },
+      {
+        "type": "paragraph",
+        "text": "17.4 Severability. If any provision of these Terms is held to be invalid or unenforceable, that provision shall be severed and the remaining provisions shall continue in full force."
+      },
+      {
+        "type": "paragraph",
+        "text": "17.5 No waiver. A failure or delay in exercising any right is not a waiver of that right."
+      },
+      {
+        "type": "paragraph",
+        "text": "17.6 No partnership or agency. Nothing in these Terms creates any partnership, joint venture, agency, employment or fiduciary relationship between you and AdepaPay or Bridgeway Technology Limited."
+      },
+      {
+        "type": "paragraph",
+        "text": "17.7 Entire agreement. These Terms, together with the Privacy Policy and the Copyright and Intellectual Property Notice, constitute the entire agreement between you and us regarding the Platform and supersede all prior understandings."
+      },
+      {
+        "type": "paragraph",
+        "text": "17.8 Contact us. This Platform is operated by Bridgeway Technology Limited, a company incorporated in Ghana under the Companies Act, 2019 (Act 992)."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Registered office: [registered office address]",
+          "Company registration number: [registration number]",
+          "Email: [contact email]",
+          "Telephone: [contact telephone]"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Effective date: [effective date]."
+      }
+    ]
+  }
+}

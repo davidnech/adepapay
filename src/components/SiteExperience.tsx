@@ -13,7 +13,8 @@ async function consentRequest(data?:Consent){
 
 export default function SiteExperience(){
   const [consent,setConsent]=useState<Consent|null>(null),[ready,setReady]=useState(false),[open,setOpen]=useState(false),[draft,setDraft]=useState<Consent>({analytics:false}),[error,setError]=useState(''),[busy,setBusy]=useState(false),[chatError,setChatError]=useState(false),[retry,setRetry]=useState(0)
-  const [route,setRoute]=useState({page:document.documentElement.dataset.sitePage||'',id:''})
+  const [chatEnabled,setChatEnabled]=useState(false)
+  const [route,setRoute]=useState({page:document.documentElement.dataset.sitePage||'',id:document.documentElement.dataset.sitePage?crypto.randomUUID():''})
   const analyticsAllowed=useRef(false)
   analyticsAllowed.current=consent?.analytics===true
   useEffect(()=>{
@@ -59,14 +60,16 @@ export default function SiteExperience(){
     return()=>{send();window.clearInterval(tick);window.clearInterval(heartbeat);window.removeEventListener('scroll',scrolling);window.removeEventListener('pointerdown',activity);window.removeEventListener('keydown',activity);window.removeEventListener('pagehide',send);document.removeEventListener('visibilitychange',visibility)}
   },[consent,ready,route])
   useEffect(()=>{
+    if(!chatEnabled)return
     if(document.getElementById('adepa-chatbit'))return
     window.cbConfig={chatId:'7bc20488-a6cf-4ebc-b6b3-dc10788bc520'}
     const script=document.createElement('script');script.id='adepa-chatbit';script.src='https://app.chatbit.co/embed.min.js';script.defer=true
     script.onload=()=>setChatError(false)
     script.onerror=()=>{script.remove();setChatError(true)}
     document.body.appendChild(script)
-  },[retry])
+  },[retry,chatEnabled])
   return <>
+    {!chatEnabled&&<button onClick={()=>setChatEnabled(true)} className={`${button} fixed bottom-6 right-6 z-[90] bg-white shadow`}>Open AI chat</button>}
     {chatError&&<div role="alert" className="fixed bottom-6 right-6 z-[90] max-w-xs rounded-xl border bg-white p-4 text-sm shadow">AI chat could not load.<button className={`${button} mt-2`} onClick={()=>{setChatError(false);setRetry(value=>value+1)}}>Retry chat</button></div>}
     {ready&&open&&publicPages.has(route.page)&&<section role="dialog" aria-modal="false" aria-labelledby="cookie-title" className="fixed bottom-4 left-4 right-4 z-[120] mx-auto max-w-3xl space-y-4 rounded-2xl border border-slate-200 bg-white p-5 text-slate-900 shadow-2xl"><h2 id="cookie-title" className="font-bold">Your cookie preferences</h2><p className="text-sm text-slate-600">Essential cookies keep sign-in and your preferences working. Optional analytics help us understand visits.</p><p className="text-xs text-slate-500">Your choice is saved for 180 days. Analytics records active time, scrolling time, scroll depth, page names, device category and referral hostname with a pseudonymous browser identifier; no account details, IP address or full URL are saved in the analytics table. Reports cover up to 90 days. You can change your choice from the Privacy Policy page.</p><fieldset disabled={busy} className="flex flex-wrap gap-5 text-sm"><label className="flex gap-2"><input type="checkbox" checked disabled/>Essential (always on)</label><label className="flex gap-2"><input type="checkbox" checked={draft.analytics} onChange={event=>setDraft({...draft,analytics:event.target.checked})}/>Traffic analytics</label></fieldset>{error&&<p role="alert" className="text-sm text-red-700">{error}</p>}<div className="flex flex-wrap gap-2"><button className={button} disabled={busy} onClick={()=>void save({analytics:false})}>Decline optional</button><button className={button} disabled={busy} onClick={()=>void save(draft)}>Save choices</button><button className={`${button} bg-blue-600 text-white`} disabled={busy} onClick={()=>void save({analytics:true})}>Accept all</button>{consent&&<button className={button} disabled={busy} onClick={()=>setOpen(false)}>Close</button>}</div></section>}
   </>

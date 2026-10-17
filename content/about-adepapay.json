@@ -1,0 +1,61 @@
+{
+  "title": "About AdepaPay",
+  "subtitle": "adepapay.com · Operated by Bridgeway Technology Limited",
+  "sections": [
+    {
+      "title": "Who we are",
+      "paragraphs": [
+        "AdepaPay is a hire-purchase ecosystem for Ghana, accessible at adepapay.com and owned and operated by Bridgeway Technology Limited, a company incorporated in Ghana under the Companies Act, 2019 (Act 992). AdepaPay connects the people and businesses involved in acquiring goods on hire-purchase and instalment terms and provides the tools that make those transactions possible."
+      ],
+      "items": []
+    },
+    {
+      "title": "What we do",
+      "paragraphs": [
+        "AdepaPay operates in four connected capacities:"
+      ],
+      "items": [
+        "Marketplace operator — we provide the online venue and tools through which Merchants list Goods and Customers and Business Buyers discover, apply for and acquire them.",
+        "Verification and scoring platform — we provide identity-verification, affordability and indicative credit-scoring tools, including a Customer risk score built from purchase and repayment behaviour.",
+        "Payment facilitator — we enable deposits, instalments and collections to be processed through licensed third-party Payment Partners  regulated by the Bank of Ghana, including processing refunds to Customers once a Merchant has initiated them.",
+        "Merchant enablement platform — we give Merchants onboarding, catalogue, record-keeping and management tools to run their hire-purchase business."
+      ]
+    },
+    {
+      "title": "Who uses AdepaPay",
+      "paragraphs": [],
+      "items": [
+        "Customers acquiring Goods on hire-purchase for personal use.",
+        "Business Buyers — companies purchasing from Merchants on a business-to-business (B2B) basis, including on hire-purchase.",
+        "Merchants listing and supplying Goods.",
+        "Finance Partners providing credit or hire-purchase financing.",
+        "Insurance Partners offering related insurance cover."
+      ]
+    },
+    {
+      "title": "Our role",
+      "paragraphs": [
+        "AdepaPay is a neutral technology intermediary. We are not a seller, owner of goods, lender, financier, insurer, underwriter or bank, and we are not a party to the contracts formed between Users. Every hire-purchase, sale, credit or insurance contract is formed directly between the relevant Users, who are responsible for its terms and performance. Our full legal role is set out in the AdepaPay Terms and Conditions."
+      ],
+      "items": []
+    },
+    {
+      "title": "Our commitment",
+      "paragraphs": [
+        "We are committed to operating lawfully and responsibly, including handling personal data in accordance with the Data Protection Act, 2012 (Act 843), facilitating payments only through licensed Payment Partners under the Payment Systems and Services Act, 2019 (Act 987), and protecting the integrity and intellectual property of the platform."
+      ],
+      "items": []
+    },
+    {
+      "title": "Contact",
+      "paragraphs": [],
+      "items": [
+        "Bridgeway Technology Limited",
+        "Website: adepapay.com",
+        "Email: [contact email]",
+        "Telephone: [contact telephone]",
+        "Registered office: [registered office address]"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+import { useEffect } from 'react'
+import about from '../../content/about-adepapay.json'
+import PublicNavbar from '../components/PublicNavbar'
+
+const go=(path:string)=>()=>window.location.assign(path)
+const eyebrow='text-xs font-bold uppercase tracking-widest text-blue-600'
+const heading='mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl'
+
+export default function AboutAdepaPay(){
+  useEffect(()=>{
+    document.title='About AdepaPay | Bridgeway Technology Limited'
+    window.dispatchEvent(new CustomEvent('site-navigation',{detail:{page:'info',id:crypto.randomUUID()}}))
+  },[])
+  const [who,what,audience,role,commitment,contact]=about.sections
+  return <div className="min-h-screen bg-slate-50 text-slate-900">
+    <PublicNavbar active="about" onHome={go('/')} onBrowseStores={go('/stores')} onBrowseProducts={go('/products')} onServices={go('/services')} onLogin={go('/login')} onRegister={go('/register')} onBecomePartner={go('/store-registration')}/>
+    <main id="main" className="mx-auto max-w-7xl space-y-16 px-5 pb-16 pt-28 sm:px-8">
+      <section className="relative overflow-hidden rounded-3xl bg-slate-950 p-7 text-white sm:p-12 lg:p-16">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full border-[40px] border-blue-500/20"/>
+        <div className="relative max-w-3xl"><p className="text-xs font-bold uppercase tracking-widest text-blue-300">Technology. People. Possibilities.</p><h1 className="mt-5 text-4xl font-bold tracking-tight sm:text-6xl">{about.title}</h1><p className="mt-5 max-w-xl text-xl leading-8 text-slate-300">A connected hire-purchase ecosystem for Ghana.</p><p className="mt-4 text-sm text-slate-400">{about.subtitle}</p><div className="mt-8 flex flex-wrap gap-3"><a className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-500" href="/products">Explore the marketplace</a><a className="rounded-xl border border-slate-600 px-5 py-3 font-semibold hover:bg-white/10" href="#our-role">Understand our role</a></div></div>
+      </section>
+      <section className="grid gap-8 lg:grid-cols-[.75fr_1.25fr]"><div><p className={eyebrow}>Built around connection</p><h2 className={heading}>{who.title}</h2></div><div className="space-y-4 text-lg leading-8 text-slate-600">{who.paragraphs.map(p=><p key={p}>{p}</p>)}</div></section>
+      <section><p className={eyebrow}>One connected platform</p><h2 className={heading}>{what.title}</h2>{what.paragraphs.map(p=><p key={p} className="mt-4 leading-7 text-slate-600">{p}</p>)}<div className="mt-7 grid gap-5 md:grid-cols-2">{what.items.map((item,i)=>{const [title,...text]=item.split(' — ');return <article key={title} className="rounded-2xl border border-slate-200 bg-white p-7"><span aria-hidden="true" className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-sm font-bold text-blue-700">0{i+1}</span><h3 className="mt-5 text-xl font-bold">{title}</h3><p className="mt-3 leading-7 text-slate-600">{text.join(' — ')}</p></article>})}</div></section>
+      <section><p className={eyebrow}>An ecosystem for people and businesses</p><h2 className={heading}>{audience.title}</h2><ul className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{audience.items.map((item,i)=><li key={item} className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-6"><span aria-hidden="true" className="mt-1 text-blue-600">↗</span><p className="leading-7 text-slate-600">{item}</p></li>)}</ul></section>
+      <section id="our-role" className="scroll-mt-28 rounded-3xl bg-slate-900 p-7 text-white sm:p-10"><p className="text-xs font-bold uppercase tracking-widest text-blue-300">Clear roles. Informed decisions.</p><h2 className="mt-3 text-3xl font-bold">{role.title}</h2>{role.paragraphs.map(p=><p key={p} className="mt-5 max-w-4xl leading-8 text-slate-300">{p}</p>)}<a className="mt-6 inline-block font-semibold text-blue-300 underline underline-offset-4" href="/terms">Read our Terms and Conditions</a></section>
+      <section className="grid gap-6 lg:grid-cols-2"><div className="rounded-3xl border border-teal-100 bg-teal-50 p-7 sm:p-9"><p className="text-xs font-bold uppercase tracking-widest text-teal-700">Responsibility at the core</p><h2 className={heading}>{commitment.title}</h2>{commitment.paragraphs.map(p=><p key={p} className="mt-5 leading-8 text-slate-600">{p}</p>)}<a className="mt-5 inline-block font-semibold text-teal-800 underline underline-offset-4" href="/privacy">Read our Privacy Policy</a></div><div className="rounded-3xl border border-slate-200 bg-white p-7 sm:p-9"><p className={eyebrow}>Stay connected</p><h2 className={heading}>{contact.title}</h2><ul className="mt-5 space-y-4 break-words text-slate-600">{contact.items.map(item=><li key={item} className="border-b border-slate-100 pb-4">{item}</li>)}</ul><a className="mt-5 inline-block font-semibold text-blue-700 underline underline-offset-4" href="/contact">Contact and support options</a></div></section>
+      <section className="flex flex-col gap-6 rounded-3xl border border-blue-100 bg-blue-50 p-7 sm:flex-row sm:items-center sm:justify-between sm:p-10"><div><h2 className="text-2xl font-bold">Discover your place in the ecosystem.</h2><p className="mt-3 text-slate-600">Explore participating stores or learn how to bring your business to AdepaPay.</p></div><div className="flex shrink-0 flex-wrap gap-3"><a href="/stores" className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700">Browse stores</a><a href="/merchants" className="rounded-xl border border-blue-200 bg-white px-5 py-3 font-semibold text-blue-700">For merchants</a></div></section>
+    </main>
+    <footer className="border-t bg-white px-5 py-8"><nav aria-label="Footer navigation" className="mx-auto flex max-w-7xl flex-wrap gap-5 text-sm text-slate-600">{[['Home','/'],['About AdepaPay','/about'],['Products','/products'],['Stores','/stores'],['Privacy Policy','/privacy'],['Terms and Conditions','/terms'],['Contact','/contact']].map(([label,url])=><a key={url} href={url} className="hover:text-blue-700">{label}</a>)}</nav><p className="mx-auto mt-6 max-w-7xl text-xs text-slate-500">© 2026 <a href="https://bridgewaytec.com" className="underline">Bridgeway Technology Limited</a>. All rights reserved.</p></footer>
+  </div>
+}

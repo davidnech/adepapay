@@ -2,6 +2,7 @@
 import hashlib
 import json
 import re
+from datetime import datetime, timezone
 from urllib.parse import urlsplit
 from flask import jsonify, request, g
 from itsdangerous import URLSafeTimedSerializer, BadSignature
@@ -147,6 +148,7 @@ def register_store_profile(app, connect_db, connect_admin, set_cookies):
             admin = connect_admin()
         except RuntimeError:
             return jsonify(error='Store profile saving is not configured. Contact the administrator.'), 503
+        saved['updatedAt'] = datetime.now(timezone.utc).isoformat()
         result = admin.auth.admin.update_user_by_id(user.id, {'app_metadata': {**user.app_metadata, 'store_profile': saved}})
         return jsonify(profile=profile_for(result.user))
 

@@ -1,10 +1,10 @@
 services:
   - type: web
     name: adepapay
-    runtime: docker
+    runtime: python
     plan: free
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
+    buildCommand: pip install -r requirements.txt && npm ci --include=dev && npm run build
+    startCommand: gunicorn --config gunicorn.conf.py backend.wsgi:app
     healthCheckPath: /healthz
     envVars:
       - key: COOKIE_SECURE
@@ -25,6 +25,8 @@ services:
         sync: false
       - key: APP_ORIGIN
         sync: false
+      - key: SEO_INDEXING
+        value: "false"
       - key: CF_ACCOUNT_ID
         sync: false
       - key: CF_IMAGES_TOKEN

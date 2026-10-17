@@ -162,6 +162,8 @@ def protect_mutations():
 
 @app.after_request
 def no_cache(response):
+    if response.status_code >= 400 or request.path.startswith('/api/'):
+        response.headers['X-Robots-Tag'] = 'noindex,nofollow'
     if request.path == '/api' or request.path.startswith('/api/'):
         response.headers['Cache-Control'] = 'no-store'
     return response

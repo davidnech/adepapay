@@ -16,6 +16,9 @@ from supabase_auth.errors import AuthApiError
 
 COOKIE = 'adepa_signup_sms'
 SENDER = 'Adepapay'
+# The documented www host redirects this POST to the apex host. Call the
+# verified canonical API directly: redirects may fail or strip Authorization.
+SMS_SEND_URL = 'https://viresender.com/v1/sms/send'
 
 
 class SMSVerificationError(Exception):
@@ -79,14 +82,31 @@ def rpc(client, name, data):
 def send_sms(phone, message):
     configured()
     try:
-        response = httpx.post('https://www.viresender.com/v1/sms/send',
-            headers={'Authorization': 'Bearer ' + os.environ['VIRESEND_API_KEY'].strip()},
+        response = httpx.post(SMS_SEND_URL,
+            headers={'Authorization': 'Bearer ' + os.environ['VIRESEND_API_KEY'].strip(),
+                     'Content-Type': 'application/json'},
             json={'to': phone, 'message': message, 'sender_id': SENDER}, timeout=15)
         response.raise_for_status()
         result = response.json()
         if not isinstance(result, dict) or result.get('success') is not True:
             raise SMSVerificationError('The SMS provider did not accept the message. Please request another code.', 502)
+    except httpx.HTTPStatusError as error:
+        status = error.response.status_code
+        # Never log provider bodies/headers: they may contain the key or OTP.
+        current_app.logger.warning('VireSend SMS rejected: HTTP %s', status)
+        if status in (401, 403):
+            message = 'VireSend rejected authentication. Check VIRESEND_API_KEY and SMS permissions on the server.'
+        elif status == 402:
+            message = 'VireSend could not send the message. Check your SMS wallet balance.'
+        elif status == 429:
+            message = 'VireSend is limiting SMS requests. Wait before requesting another code.'
+        elif 300 <= status < 400:
+            message = 'VireSend redirected the SMS endpoint. Contact support to check the server integration.'
+        else:
+            message = f'VireSend rejected the SMS request (HTTP {status}). Contact support to check the SMS settings.'
+        raise SMSVerificationError(message, 502) from None
     except (httpx.HTTPError, ValueError):
+        current_app.logger.warning('VireSend SMS request could not be confirmed.')
         raise SMSVerificationError('The SMS could not be confirmed. If a code arrives, use it; otherwise request another code.', 502) from None
 
 

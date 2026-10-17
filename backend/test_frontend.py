@@ -17,7 +17,7 @@ class FrontendTests(unittest.TestCase):
         (self.dist / 'assets' / 'main-abc.js').write_text('console.log(1)', encoding='utf-8')
         self.app = Flask(__name__)
         self.app.get('/api/example')(lambda: jsonify(data='real API'))
-        register_frontend(self.app, self.dist)
+        register_frontend(self.app, self.dist, public_pages=False)
         self.http = self.app.test_client()
 
     def test_spa_routes_and_html_revalidation(self):

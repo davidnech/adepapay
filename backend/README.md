@@ -1,6 +1,6 @@
 # Render deployment
 
-See [DEPLOY_RENDER.md](../DEPLOY_RENDER.md) for the production Docker service, environment variables, and index migration, and [APP_READINESS.md](../APP_READINESS.md) for verification coverage. Install Python dependencies with `python -m pip install -r requirements.txt` from the repository root. Run `npm run check` for the complete local check suite.
+See [DEPLOY_RENDER.md](../DEPLOY_RENDER.md) for the Render Python 3 service, environment variables, and index migration, and [APP_READINESS.md](../APP_READINESS.md) for verification coverage. The production build command is `pip install -r requirements.txt && npm ci --include=dev && npm run build`; start with `gunicorn --config gunicorn.conf.py backend.wsgi:app`. Install Python dependencies with `python -m pip install -r requirements.txt` from the repository root. Run `npm run check` for the complete local check suite.
 
 # Supabase authentication
 

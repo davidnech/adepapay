@@ -6,6 +6,7 @@ RUN npm ci --include=dev
 COPY index.html vite.config.ts ./
 COPY .figma/make/site.json .figma/make/site.json
 COPY src ./src
+COPY content ./content
 COPY scripts ./scripts
 COPY public ./public
 RUN npm run build
@@ -20,6 +21,8 @@ COPY backend/requirements.txt backend/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt \
     && useradd --create-home --uid 10001 adepapay
 COPY backend/*.py ./backend/
+COPY backend/templates ./backend/templates
+COPY content ./content
 COPY gunicorn.conf.py ./
 COPY --from=frontend /build/dist ./dist
 USER adepapay

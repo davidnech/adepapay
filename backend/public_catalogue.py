@@ -42,6 +42,7 @@ def public_store(user):
         'website':website,'openingHours':profile.get('openingHours',''),'gpsAddress':profile.get('gpsAddress',''),
         'logo':image_url(profile.get('logo')),'cover':image_url(profile.get('cover')),
         'approved':True,'createdAt':str(getattr(user,'created_at','') or ''),
+        'updatedAt':max(filter(None,[profile.get('updatedAt'),saved_rules.get('publishedAt')]),default=None),'operatingModel':reviewed.get('storeType',''),
         'categories':[],'productCount':0,
         'terms':{key:values[key] for key in DEFAULTS if key in values} if saved_rules.get('revision') else None,
         'termsRevision':saved_rules.get('revision',0)}
@@ -65,7 +66,7 @@ def snapshot(client, missing=None):
         offset=0
         while True:
             try:
-                rows=client.table('store_products').select('id,store_id,name,category,description,condition,price,prices,stock,images,payment_options,swap,layaway,created_at').in_('store_id',batch).eq('status','Active').order('id').range(offset,offset+499).execute().data
+                rows=client.table('store_products').select('id,store_id,name,sku,category,description,condition,price,prices,stock,images,payment_options,swap,layaway,created_at,updated_at').in_('store_id',batch).eq('status','Active').order('id').range(offset,offset+499).execute().data
             except APIError as error:
                 if missing is None or error.code not in ('PGRST205','42P01'): raise
                 missing['products']=True
@@ -74,7 +75,7 @@ def snapshot(client, missing=None):
             if len(rows)<500: break
             offset+=500
         try:
-            rows=client.table('store_promotion_settings').select('store_id,public_enabled,campaigns').in_('store_id',batch).execute().data
+            rows=client.table('store_promotion_settings').select('store_id,public_enabled,campaigns,updated_at').in_('store_id',batch).execute().data
         except APIError as error:
             if missing is None or error.code not in ('PGRST205','42P01'): raise
             missing['promotions']=True
@@ -98,16 +99,22 @@ def snapshot(client, missing=None):
         current=(price*(100-percent)/100).quantize(Decimal('.01'),rounding=ROUND_HALF_UP)
         public_products.append({
             'id':product['id'],'storeId':store['id'],'storeName':store['name'],'name':product['name'],
+            'sku':product.get('sku'),'updatedAt':max(filter(None,[product.get('updated_at'),campaigns.get('updated_at'),store.get('updatedAt')]),default=None),
             'category':product['category'],'description':product['description'],'condition':product['condition'],
             'price':float(price),'currentPrice':float(current),'inStock':product['stock']>0,
             'prices':{key:float((Decimal(str(product.get('prices',{}).get(key,product['price'])))*(100-percent)/100).quantize(Decimal('.01'),rounding=ROUND_HALF_UP)) for key in ('hire_purchase','layaway','swap')},
             'images':[url for item in product['images'] if (url:=image_url(item))],
             'paymentOptions':{key:bool(product['payment_options'].get(key)) for key in ('payNow','hirePurchase','layaway')},
             'swapAvailable':product.get('swap',{}).get('enabled') is True,
+            'swapTerms':{key:value for key,value in product.get('swap',{}).items() if key in ('categories','minimumCondition','validityDays','instructions')},
+            'layaway':{key:value for key,value in product.get('layaway',{}).items() if key in ('depositType','deposit','duration','frequencies','minimumInstallment','reservationRules','cancellationPolicy','refundPolicy')},
             'createdAt':product['created_at'],
             'promotion':{'name':campaign['name'],'percent':float(percent),'endsAt':campaign['endsAt']} if campaign else None})
         store['productCount']+=1
         if product['category'] not in store['categories']: store['categories'].append(product['category'])
+    for product in public_products:
+        store=stores[product['storeId']]
+        store['updatedAt']=max(filter(None,[store.get('updatedAt'),product.get('updatedAt')]),default=None)
     return list(stores.values()),public_products
 
 

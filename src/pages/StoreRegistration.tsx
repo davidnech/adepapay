@@ -666,7 +666,7 @@ export default function StoreRegistration({
             <label htmlFor="store-confirm-password" className="text-sm font-semibold text-slate-700">Confirm password</label>
             <input id="store-confirm-password" type="password" autoComplete="new-password" value={confirmPassword} onChange={event => setConfirmPassword(event.target.value)} disabled={submitting} required className={fieldClass(errors.confirmPassword)} />
             {errors.confirmPassword && <p role="alert" className="mt-1 text-xs text-red-600">{errors.confirmPassword}</p>}
-            <label className="mt-4 flex gap-2 text-sm text-slate-600"><input type="checkbox" checked={agreeTerms} onChange={event => setAgreeTerms(event.target.checked)} disabled={submitting} />I accept the Terms of Service and Privacy Policy.</label>
+            <label className="mt-4 flex gap-2 text-sm text-slate-600"><input type="checkbox" checked={agreeTerms} onChange={event => setAgreeTerms(event.target.checked)} disabled={submitting} /><span>I accept the <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-600 underline">Terms and Conditions<span className="sr-only"> (opens in a new tab)</span></a> and <a href="/privacy" target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-600 underline">Privacy Policy<span className="sr-only"> (opens in a new tab)</span></a>.</span></label>
             {errors.agreeTerms && <p role="alert" className="mt-1 text-xs text-red-600">{errors.agreeTerms}</p>}
           </div>
           <button

@@ -125,10 +125,10 @@ function Shell({ onBack, step, children }: { onBack: () => void; step: Step; chi
       <footer className="py-6 px-4 border-t border-gray-100 bg-white">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <span className="text-sm font-semibold" style={{ color: '#101828' }}>Bridge<span style={{ color: '#0B5FFF' }}>Pay</span></span>
-          <p className="text-xs text-gray-400">© 2026 AdepaPay Technologies Ltd. All rights reserved.</p>
+          <p className="text-xs text-gray-400">© 2026 <a href="https://bridgewaytec.com" className="underline underline-offset-4 hover:text-gray-700">Bridgeway Technology Limited</a>. All rights reserved.</p>
           <div className="flex gap-4 text-xs text-gray-400">
-            <a href="#" className="hover:text-gray-700 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-gray-700 transition-colors">Terms</a>
+            <a href="/privacy" className="hover:text-gray-700 transition-colors">Privacy</a>
+            <a href="/terms" className="hover:text-gray-700 transition-colors">Terms</a>
             <a href="#" className="hover:text-gray-700 transition-colors">Help</a>
           </div>
         </div>

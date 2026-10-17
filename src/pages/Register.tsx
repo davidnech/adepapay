@@ -139,13 +139,7 @@ function SelectField({ label, value, onChange, error, options, required = false 
 function CheckboxField({ checked, onChange, children }: { checked: boolean; onChange: (v: boolean) => void; children: React.ReactNode }) {
   return (
     <label className="flex items-start gap-3 cursor-pointer group">
-      <div
-        onClick={() => onChange(!checked)}
-        className="w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all duration-200"
-        style={{ borderColor: checked ? '#0B5FFF' : '#D1D5DB', background: checked ? '#0B5FFF' : '#fff' }}
-      >
-        {checked && <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24"><polyline strokeLinecap="round" strokeLinejoin="round" points="20 6 9 17 4 12"/></svg>}
-      </div>
+      <input type="checkbox" checked={checked} onChange={event => onChange(event.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-blue-600" />
       <span className="text-sm text-gray-600 leading-relaxed group-hover:text-gray-900 transition-colors">{children}</span>
     </label>
   )
@@ -272,14 +266,14 @@ function Step3({ data, setData, errors }: { data: FormData; setData: (d: FormDat
       <div className="space-y-3 pt-2 p-4 rounded-2xl" style={{ background: '#F8FAFC' }}>
         <CheckboxField checked={data.agreeTerms} onChange={v => setData({ ...data, agreeTerms: v })}>
           I agree to AdepaPay's{' '}
-          <a href="#" className="font-semibold hover:underline" style={{ color: '#0B5FFF' }}>Terms and Conditions</a>
+          <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold hover:underline" style={{ color: '#0B5FFF' }}>Terms and Conditions<span className="sr-only"> (opens in a new tab)</span></a>
           <span className="text-red-400 ml-0.5">*</span>
         </CheckboxField>
         {errors.agreeTerms && <p className="text-xs font-medium" style={{ color: '#F04438' }}>You must accept the Terms to continue</p>}
 
         <CheckboxField checked={data.agreePrivacy} onChange={v => setData({ ...data, agreePrivacy: v })}>
           I agree to AdepaPay's{' '}
-          <a href="#" className="font-semibold hover:underline" style={{ color: '#0B5FFF' }}>Privacy Policy</a>
+          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="font-semibold hover:underline" style={{ color: '#0B5FFF' }}>Privacy Policy<span className="sr-only"> (opens in a new tab)</span></a>
           <span className="text-red-400 ml-0.5">*</span>
         </CheckboxField>
         {errors.agreePrivacy && <p className="text-xs font-medium" style={{ color: '#F04438' }}>You must accept the Privacy Policy to continue</p>}
