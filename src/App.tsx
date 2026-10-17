@@ -377,8 +377,11 @@ const Icon = {
 function HeroIllustration() {
   return (
     <img
-      src="/images/payment-options-phone.svg"
-      alt="Illustration of AdepaPay cash, hire purchase, layaway and swap options"
+      src="/images/index_phone_frame.png"
+      width={408}
+      height={612}
+      fetchPriority="high"
+      alt="Hand holding a phone displaying the AdepaPay product marketplace"
       className="mx-auto h-auto w-full max-w-[560px] object-contain"
     />
   )
@@ -854,13 +857,12 @@ function Landing({
                 </div>
               </div>
               <div className="hero-visual" style={{ animationDelay: "300ms" }}>
-                <HeroIllustration /><p className="mt-3 text-center text-xs text-slate-500">Illustrative plan preview. Actual products and terms appear below.</p>
+                <HeroIllustration /><p className="mt-3 text-center text-xs text-slate-500">Illustrative marketplace preview. Actual products and terms appear below.</p>
               </div>
             </div>
           </div>
         </section>
 
-        <AboutIntro />
         {/* ── FEATURED STORES ───────────────────────────────────────────────── */}
         <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
@@ -1162,7 +1164,7 @@ function Landing({
                 border: "1px solid #e2eeff",
               }}
             >
-              <div className="grid lg:grid-cols-2 gap-10 p-10 lg:p-16 items-center">
+              <div className="grid lg:grid-cols-2 gap-10 p-5 sm:p-10 lg:p-16 items-center">
                 <div className="reveal order-2 lg:order-1">
                   <MerchantIllustration /><p className="mt-3 text-center text-xs text-slate-500">Illustrative workspace preview; figures shown are examples.</p>
                 </div>
@@ -1232,6 +1234,7 @@ function Landing({
         </section>
 
         {/* ── FINAL CTA ─────────────────────────────────────────────────────── */}
+        <AboutIntro />
         <section
           className="py-20 px-4 sm:px-6 lg:px-8"
           style={{

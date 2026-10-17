@@ -322,8 +322,8 @@ def render_public(dist,path):
                 legal_document=document, indexable=not request.args,crumbs=[('Home','/'),(document['title'],path)]))
         return page_response(dist,dict(kind='home' if path=='/' else 'categories' if path=='/categories' else 'info',path=path,title=title,
             heading='Shop on your terms in Ghana' if path=='/' else title.split(' | ')[0],description=description,sections=sections,
-            products=sorted(products,key=lambda p:(p['createdAt'],p['id']),reverse=True)[:6] if path=='/' else [],
-            stores=sorted(stores,key=lambda s:(s['name'].casefold(),s['id']))[:6] if path=='/' else [],
+            products=sorted(products,key=lambda p:(p.get('rating') or 0,p.get('ratingCount') or 0,p['createdAt'],p['id']),reverse=True)[:6] if path=='/' else [],
+            stores=sorted(stores,key=lambda s:(-(s.get('rating') or 0),-(s.get('ratingCount') or 0),s['name'].casefold(),s['id']))[:6] if path=='/' else [],
             categories=inventory_categories(products),counts={'stores':len(stores),'products':len(products)},
             indexable=not request.args,crumbs=[('Home','/')] if path=='/' else [('Home','/'),(title.split(' | ')[0],path)]))
     return None

@@ -15,6 +15,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900">
 <div id="root"><div data-public-content>
+{% if kind == "home" %}{% include "_home_content.html" %}{% else %}
   <a href="#main" class="sr-only focus:not-sr-only">Skip to main content</a>
   <header class="border-b border-slate-200 bg-white">
     <nav aria-label="Main navigation" class="mx-auto flex max-w-7xl flex-wrap items-center gap-4 px-5 py-4">
@@ -26,10 +27,6 @@
     <nav aria-label="Breadcrumb" class="flex flex-wrap gap-2 text-sm text-slate-600">{% for name,url in crumbs %}{% if not loop.first %}<span aria-hidden="true">/</span>{% endif %}<a href="{{ url }}" {% if loop.last %}aria-current="page"{% endif %}>{{ name }}</a>{% endfor %}</nav>
     {% if kind != "about" %}<section><h1 class="text-3xl font-bold tracking-tight sm:text-5xl">{{ heading }}</h1><p class="mt-4 max-w-3xl leading-7 text-slate-600">{{ description }}</p></section>{% endif %}
     {% if kind == "about" %}{% include "_about_content.html" %}{% endif %}
-    {% if kind == 'home' %}
-    <section class="grid gap-6 md:grid-cols-2 md:items-center"><div><h2 class="text-2xl font-bold">Find a product. Review the store terms.</h2><p class="mt-4 leading-7">Compare the published prices and options, then submit a request to the store where an application is required. Stock, approval and collection arrangements depend on the selected listing.</p><p class="mt-4 text-sm">{{ counts.stores }} currently participating stores · {{ counts.products }} published products</p><div class="mt-6 flex flex-wrap gap-3"><a class="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white" href="/products">Browse products</a><a class="rounded-xl border px-5 py-3 font-semibold" href="/stores">Browse stores</a></div></div><img src="/images/payment-options-phone.svg" alt="Illustration of the four AdepaPay payment options" width="560" height="620" fetchpriority="high" class="mx-auto w-full max-w-sm"></section>
-    {% endif %}
-    {% if kind == 'home' %}<section aria-labelledby="home-about-title" class="grid gap-8 rounded-3xl border border-blue-100 bg-blue-50 p-7 sm:p-10 lg:grid-cols-[1fr_1.4fr] lg:items-center"><div><p class="text-xs font-bold uppercase tracking-widest text-blue-700">Get to know us</p><h2 id="home-about-title" class="mt-3 text-3xl font-bold tracking-tight">About AdepaPay</h2><p class="mt-3 text-sm text-slate-600">{{ about_document.subtitle }}</p></div><div><p class="leading-7 text-slate-700">{{ about_document.sections[0].paragraphs[0] }}</p><a href="/about" class="mt-5 inline-flex items-center gap-3 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700">Discover AdepaPay <span aria-hidden="true">&rarr;</span></a></div></section>{% endif %}
     {% if kind in ['home','info'] and path not in ['/privacy','/terms'] %}<section class="flex flex-wrap gap-3" aria-label="Shopping options">{% for label,url in [('Hire purchase','/hire-purchase'),('Layaway','/layaway'),('Device swap','/device-swap'),('Cash products','/products')] %}<a class="rounded-xl border bg-white px-4 py-3 text-sm font-semibold" href="{{ url }}">{{ label }}</a>{% endfor %}</section>{% endif %}
     {% if kind == 'legal' %}<article aria-label="{{ legal_document.title }}" class="max-w-4xl space-y-5 rounded-2xl border bg-white p-6 sm:p-8">
       {% for block in legal_document.blocks[1:] %}
@@ -68,6 +65,7 @@
     {% if pager and pages > 1 %}<nav aria-label="Listing pages" class="flex flex-wrap gap-3">{% for number,url in pager %}<a class="rounded-lg border bg-white px-4 py-2" href="{{ url }}" {% if number == page %}aria-current="page"{% endif %}>Page {{ number }}</a>{% endfor %}</nav>{% endif %}
   </main>
   <footer class="mt-8 border-t bg-white px-5 py-8"><nav class="mx-auto flex max-w-7xl flex-wrap gap-4 text-sm" aria-label="Footer navigation">{% for label,url in [('About','/about'),('Contact','/contact'),('Help','/help'),('FAQs','/faq'),('Privacy','/privacy'),('Terms','/terms'),('Become a merchant','/merchants')] %}<a href="{{ url }}">{{ label }}</a>{% endfor %}</nav><p class="mx-auto mt-5 max-w-7xl text-sm text-slate-600">AdepaPay · Ghana · Prices in GHS. Product availability, approval and terms depend on the selling store.</p><p class="mx-auto mt-4 max-w-7xl text-sm text-slate-600">&copy; 2026 <a href="https://bridgewaytec.com" class="underline underline-offset-4 hover:text-blue-700">Bridgeway Technology Limited</a>. All rights reserved.</p></footer>
+{% endif %}
 </div></div>
 {% for js in assets.scripts %}<script type="module" crossorigin src="{{ js }}"></script>{% endfor %}
 </body></html>

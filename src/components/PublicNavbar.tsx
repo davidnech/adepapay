@@ -31,8 +31,9 @@ export default function PublicNavbar({ active, onHome, onBrowseStores, onBrowseP
   ]
   return <header className={`fixed inset-x-0 top-0 z-50 border-b transition-all ${scrolled ? "border-slate-200 bg-white/95 shadow-sm backdrop-blur-xl" : "border-slate-100 bg-white/90 backdrop-blur-xl"}`}>
     <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-5 px-4 sm:px-6 lg:px-8">
-      <button type="button" onClick={() => navigate(onHome)} className="shrink-0" aria-label="AdepaPay home">
-        <img src="/images/adepa_pay_logo.png" alt="AdepaPay" className="h-[117px] w-auto object-contain" />
+      <button type="button" onClick={() => navigate(onHome)} className="flex shrink-0 items-center gap-2" aria-label="AdepaPay home">
+        <img src="/images/favicon/favicon.svg" alt="" className="h-9 w-9 object-contain" />
+        <span className="text-lg font-bold tracking-tight text-blue-900">Adepa<span className="text-blue-600">Pay</span></span>
       </button>
       <nav className="hidden items-center gap-1 xl:flex" aria-label="Main navigation">
         <a href="/about" aria-current={active==='about'?'page':undefined} className={`rounded-xl px-4 py-2.5 text-sm font-semibold ${active==='about'?'bg-blue-50 text-blue-700':'text-slate-600 hover:bg-slate-50 hover:text-blue-700'}`}>About</a>

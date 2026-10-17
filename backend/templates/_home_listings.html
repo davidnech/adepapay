@@ -1,0 +1,16 @@
+<p class="mb-5 text-sm text-slate-500">Rated listings are ranked by feedback from completed purchases. New listings appear without a rating.</p>
+<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+{% for item in (stores if listing_type=='stores' else products) %}
+{% set image=(item.cover or item.logo) if listing_type=='stores' else (item.images[0] if item.images else '') %}
+{% set url=store_path(item) if listing_type=='stores' else product_path(item) %}
+<article class="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+  {% if image %}<a href="{{ url }}"><img src="{{ image }}" alt="{{ item.name }}" loading="lazy" decoding="async" width="640" height="480" class="h-48 w-full {{ 'object-cover' if listing_type=='stores' else 'object-contain p-3' }}"></a>{% else %}<div class="grid h-48 place-items-center bg-blue-50 text-blue-800">{{ 'Approved store' if listing_type=='stores' else 'Product image unavailable' }}</div>{% endif %}
+  <div class="flex flex-1 flex-col gap-3 p-5"><h3 class="font-bold text-slate-900"><a href="{{ url }}">{{ item.name }}</a></h3>
+  {% if listing_type=='stores' %}<p class="text-sm text-slate-500">{{ item.city }}{% if item.region %}, {{ item.region }}{% endif %}</p><p class="text-sm">{{ item.productCount }} active products</p>
+  {% else %}<p class="text-sm text-slate-500">{{ item.storeName }}</p><dl aria-label="Product prices" class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+  {% for label,amount,offered in [('Cash',item.currentPrice,item.paymentOptions.payNow),('Hire Purchase',item.prices.hire_purchase,item.paymentOptions.hirePurchase),('Layaway',item.prices.layaway,item.paymentOptions.layaway),('Swap',item.prices.swap,item.swapAvailable)] %}<div><dt class="text-xs text-slate-500">{{ label }}{% if not offered %} <span class="text-[10px]">(Not offered)</span>{% endif %}</dt><dd class="mt-0.5 font-semibold text-blue-700">GH₵{{ money(amount) }}</dd></div>{% endfor %}</dl>{% endif %}
+  <p class="text-sm text-amber-700">{% if item.ratingCount %}★ {{ '%.2f'|format(item.rating) }} / 5 · {{ item.ratingCount }} ratings{% else %}Not rated yet{% endif %}</p>
+  <a href="{{ url }}" class="mt-auto rounded-xl border border-blue-600 px-4 py-2.5 text-center text-sm font-semibold text-blue-700 hover:bg-blue-50">View {{ 'store' if listing_type=='stores' else 'product' }}</a></div>
+</article>
+{% else %}<p class="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-slate-500 sm:col-span-2 lg:col-span-3">No featured {{ listing_type }} available yet. Check back after stores publish their listings.</p>{% endfor %}
+</div>

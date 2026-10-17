@@ -50,6 +50,25 @@ class PublicSeoTests(unittest.TestCase):
         stores,products=snapshot(self.admin)
         return store_path(stores[0]),product_path(products[0]),category_path(products[0]['category'])
 
+    def test_home_preserves_landing_design_and_live_prices_without_javascript(self):
+        response=self.http.get('/')
+        self.assertEqual(response.status_code,200)
+        html=unescape(response.get_data(as_text=True))
+        for text in ('Buy in Installments.', 'Pay Ahead.', 'Trade Up.', 'Featured Stores',
+                     'Featured Products', 'How AdepaPay Works', 'Why Choose AdepaPay?',
+                     'Frequently Asked Questions', 'Grow Your Business', 'Next Product?',
+                     'Bridgeway Technology Limited', 'data-cookie-settings'):
+            self.assertIn(text,html)
+        self.assertEqual(len(re.findall(r'<h1\b',html)),1)
+        self.assertEqual(html.count('<summary class="cursor-pointer'),6)
+        for price in ('123.45','180.00','150.00','160.00'):
+            self.assertIn('GH\u20b5'+price,html)
+        for url in (*self.paths()[:2],'/about','/privacy','/terms','/register','/store-registration','/services'):
+            self.assertIn(f'href="{url}"',html)
+        self.assertLess(html.index('Featured Stores'),html.index('home-about-title'))
+        self.product['prices']['layaway']=175
+        self.assertIn('GH\u20b5175.00',self.http.get('/').get_data(as_text=True))
+
     def graph(self,response):
         match=re.search(r'<script type="application/ld\+json">(.*?)</script>',response.get_data(as_text=True),re.S)
         return json.loads(match.group(1))['@graph']
