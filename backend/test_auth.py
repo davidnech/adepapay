@@ -75,6 +75,70 @@ class AuthTests(unittest.TestCase):
         self.assertEqual(cookie.max_age, 2592000)
         self.assertEqual(cookie.same_site, 'Lax')
 
+    def test_large_store_login_survives_browser_cookie_limit(self):
+        # Approved stores accumulate profile/rules metadata in their JWTs.
+        token = 'a' * 5116
+        self.user.app_metadata = {
+            'role': 'Store Manager', 'store_id': self.user.id,
+            'store_review': {'status': 'Approved', 'application': {'storeName': 'Test Shop'}},
+            'store_subscription': {'paid_until': '2099-01-01T00:00:00+00:00',
+                                   'plan_name': 'Test', 'environment': 'test'},
+        }
+        self.service.auth.sign_in_with_password.return_value = Obj(
+            user=self.user, session=Obj(access_token=token, refresh_token='refresh'))
+        self.service.auth.get_user.return_value = Obj(user=self.user)
+        with patch.dict(os.environ, {'COOKIE_SECURE': 'true'}):
+            result = self.http.post('/api/auth/login', json={**self.data, 'remember': True})
+        self.assertEqual(result.status_code, 200)
+        for header in result.headers.getlist('Set-Cookie'):
+            self.assertLess(len(header.encode()), 4093)
+        for name in (ACCESS, ACCESS + '.0', ACCESS + '.1'):
+            cookie = self.http.get_cookie(name, path='/api/auth')
+            self.assertTrue(cookie.http_only)
+            self.assertTrue(cookie.secure)
+            self.assertEqual(cookie.same_site, 'Lax')
+            self.assertEqual(cookie.max_age, 2592000)
+        self.assertEqual(self.http.get('/api/auth/session').status_code, 200)
+        self.assertEqual(self.http.get('/api/auth/store/profile').status_code, 200)
+        with patch('backend.customer_applications.rows_for', return_value=[]):
+            dashboard = self.http.get('/api/auth/store/customer-applications/dashboard')
+        self.assertEqual(dashboard.status_code, 200)
+        self.assertEqual(dashboard.json['applications'], [])
+        self.service.auth.get_user.assert_called_with(token)
+        self.http.post('/api/auth/logout', json={})
+        self.service.auth.set_session.assert_called_once_with(token, 'refresh')
+        for name in (ACCESS, ACCESS + '.0', ACCESS + '.1', REFRESH):
+            self.assertIsNone(self.http.get_cookie(name, path='/api/auth'))
+
+    def test_refresh_replaces_large_cookie_chunks_and_cleans_up(self):
+        self.http.set_cookie(ACCESS, 'expired', path='/api/auth')
+        self.http.set_cookie(REFRESH, 'refresh', path='/api/auth')
+        self.service.auth.get_user.side_effect = AuthApiError('expired', 401, 'bad_jwt')
+        large_token = 'b' * 9000
+        self.service.auth.refresh_session.return_value = Obj(
+            user=self.user, session=Obj(access_token=large_token, refresh_token='renewed'))
+        result = self.http.get('/api/auth/session')
+        self.assertEqual(result.status_code, 200)
+        self.assertTrue(all(len(h.encode()) < 4093 for h in result.headers.getlist('Set-Cookie')))
+        self.service.auth.get_user.side_effect = None
+        self.service.auth.get_user.return_value = Obj(user=self.user)
+        self.assertEqual(self.http.get('/api/auth/session').status_code, 200)
+        self.service.auth.get_user.assert_called_with(large_token)
+        self.service.auth.get_user.side_effect = AuthApiError('expired', 401, 'bad_jwt')
+        self.service.auth.refresh_session.return_value = Obj(user=self.user, session=self.session)
+        self.assertEqual(self.http.get('/api/auth/session').status_code, 200)
+        self.assertEqual(self.http.get_cookie(ACCESS, path='/api/auth').value, 'access-token')
+        for index in range(3):
+            self.assertIsNone(self.http.get_cookie(f'{ACCESS}.{index}', path='/api/auth'))
+
+    def test_incomplete_cookie_chunks_are_rejected_and_cleared(self):
+        for marker in ('chunks:2', 'chunks:999999', 'chunks:invalid'):
+            self.http.set_cookie(ACCESS, marker, path='/api/auth')
+            self.http.set_cookie(ACCESS + '.0', 'partial', path='/api/auth')
+            self.assertEqual(self.http.get('/api/auth/session').status_code, 401)
+            self.assertIsNone(self.http.get_cookie(ACCESS + '.0', path='/api/auth'))
+        self.service.auth.get_user.assert_not_called()
+
     def test_validation_precedes_supabase(self):
         for changes in ({'email': 'bad'}, {'password': 'short'}, {'agreeTerms': False},
                         {'phone': '123'}, {'dob': '2020-01-01'}, {'role': 'Admin', 'firstName': ''}):

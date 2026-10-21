@@ -11,10 +11,12 @@ from flask import jsonify, request, g
 from postgrest.exceptions import APIError
 from supabase_auth.errors import AuthApiError
 try:
+    from .session_cookies import access_token
     from .store_team import resolve_store, StoreAccessError
     from .subscription_access import subscription_info
     from .store_directory import directory_row
 except ImportError:
+    from session_cookies import access_token
     from store_team import resolve_store, StoreAccessError
     from subscription_access import subscription_info
     from store_directory import directory_row
@@ -86,7 +88,7 @@ def register_subscriptions(app,connect_db,connect_admin,authorized_admin):
         return wrapped
 
     def billing_actor():
-        token=request.cookies.get('adepa_access')
+        token=access_token()
         if not token: raise StoreAccessError('Sign in to your store account.',401)
         auth=connect_db()
         try: user=auth.auth.get_user(token).user

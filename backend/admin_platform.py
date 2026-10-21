@@ -9,10 +9,12 @@ from uuid import UUID
 from flask import jsonify, request, Response
 from postgrest.exceptions import APIError
 try:
+    from .session_cookies import access_token
     from .admin_operations import Records, table_rows, csv_cell, amount
     from .store_approvals import application_data
     from .store_insights import build_report
 except ImportError:
+    from session_cookies import access_token
     from admin_operations import Records, table_rows, csv_cell, amount
     from store_approvals import application_data
     from store_insights import build_report
@@ -201,7 +203,7 @@ def register_admin_platform(app,connect_admin,connect_db,authorized):
         return decorate
 
     def account():
-        token=request.cookies.get('adepa_access')
+        token=access_token()
         if not token: return None
         user=connect_db().auth.get_user(token).user
         if not user: return None

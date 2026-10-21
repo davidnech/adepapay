@@ -8,8 +8,10 @@ from itsdangerous import URLSafeTimedSerializer, BadSignature
 from postgrest.exceptions import APIError
 from supabase_auth.errors import AuthApiError
 try:
+    from .session_cookies import access_token
     from .subscription_access import subscription_info
 except ImportError:
+    from session_cookies import access_token
     from subscription_access import subscription_info
 
 try:
@@ -99,7 +101,7 @@ def public_record(row, own=False):
 
 def register_field_agents(app, owner, connect_db, connect_admin):
     def actor():
-        access=request.cookies.get('adepa_access')
+        access=access_token()
         if not access: raise StoreAccessError('Sign in to your agent account.',401)
         client=connect_db()
         try: user=client.auth.get_user(access).user

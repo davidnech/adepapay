@@ -12,9 +12,11 @@ from itsdangerous import URLSafeTimedSerializer, BadSignature
 from postgrest.exceptions import APIError
 from supabase_auth.errors import AuthApiError
 try:
+    from .session_cookies import access_token
     from .subscription_access import subscription_info
     from .store_insights import register_store_insights
 except ImportError:
+    from session_cookies import access_token
     from subscription_access import subscription_info
     from store_insights import register_store_insights
 
@@ -183,7 +185,7 @@ def serialize(row,view=None):
 
 def register_customer_applications(app,owner,connect_db,connect_admin):
     def actor(customer=True):
-        token=request.cookies.get('adepa_access')
+        token=access_token()
         if not token: raise StoreAccessError('Sign in to your customer account to continue.',401)
         client=connect_db()
         try: user=client.auth.get_user(token).user

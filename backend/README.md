@@ -33,6 +33,8 @@ New users receive the Customer role. Elevated roles are read only from trusted `
 
 Access and refresh tokens use HttpOnly, SameSite=Lax cookies. Remember me persists cookies for 30 days; otherwise they are browser-session cookies. Sessions are checked on load, focus, and every minute while signed in. Logout revokes the current Supabase session and clears cookies. Password recovery and social/phone login are outside this first release.
 
+Large access tokens are split into 3,000-character HttpOnly cookies and reassembled before Supabase verification. Store metadata can grow the JWT beyond browsers' per-cookie limit, causing login to succeed while dashboard requests report that sign-in is required. After deploying this fix, affected users must sign in again to receive the smaller cookies. Refresh replaces the chunks, and logout clears them.
+
 For production, serve the Python API under the same origin at `/api`, use HTTPS, set `COOKIE_SECURE=true` and `APP_ORIGIN=https://your-app-domain`, and use a production WSGI server. The Vite development proxy is not part of the production bundle. Apply shared rate limiting to auth routes at the reverse proxy in addition to Supabase's own limits.
 
 Tests (mock Supabase, create no real users):

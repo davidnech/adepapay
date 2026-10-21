@@ -12,6 +12,7 @@ import httpx
 from flask import Flask, jsonify, request, session as admin_session
 from supabase_auth.errors import AuthApiError, AuthRetryableError
 if __package__:
+    from .session_cookies import ACCESS, REFRESH, REMEMBER, access_token, set_cookies, clear_cookies
     from .sms_verification import (register_sms_verification, start_or_resume,
         complete_signup, clear_challenge, require_verified_user)
     from .frontend import register_frontend
@@ -29,6 +30,7 @@ if __package__:
     from .subscriptions import register_subscriptions
     from .subscription_access import subscription_info
 else:
+    from session_cookies import ACCESS, REFRESH, REMEMBER, access_token, set_cookies, clear_cookies
     from sms_verification import (register_sms_verification, start_or_resume,
         complete_signup, clear_challenge, require_verified_user)
     from frontend import register_frontend
@@ -58,7 +60,6 @@ app.config.update(
     SESSION_COOKIE_SECURE=os.getenv('COOKIE_SECURE', 'false').lower() == 'true',
     PERMANENT_SESSION_LIFETIME=timedelta(days=30),
 )
-ACCESS, REFRESH, REMEMBER = 'adepa_access', 'adepa_refresh', 'adepa_remember'
 
 
 def admin_credentials():
@@ -82,23 +83,6 @@ def authorized_admin():
     if app.secret_key and email and password and isinstance(version, str) and hmac.compare_digest(version, admin_version()):
         return email
     return None
-
-
-def clear_cookies(response):
-    for name in (ACCESS, REFRESH, REMEMBER):
-        response.delete_cookie(name, path='/api/auth')
-    return response
-
-
-def set_cookies(response, session, remember=False):
-    if not session:
-        return response
-    for name, value in ((ACCESS, session.access_token), (REFRESH, session.refresh_token),
-                        (REMEMBER, '1' if remember else '0')):
-        response.set_cookie(name, value, httponly=True, samesite='Lax',
-                            secure=os.getenv('COOKIE_SECURE', 'false').lower() == 'true',
-                            path='/api/auth', max_age=30 * 86400 if remember else None)
-    return response
 
 
 def public_user(user):
@@ -377,7 +361,7 @@ def session():
             return jsonify(user=admin_user())
         admin_session.clear()
         return clear_cookies(jsonify(user=None)), 401
-    access, refresh = request.cookies.get(ACCESS), request.cookies.get(REFRESH)
+    access, refresh = access_token(), request.cookies.get(REFRESH)
     if not access:
         return clear_cookies(jsonify(user=None)), 401
     client = connect_db()
@@ -400,7 +384,7 @@ def session():
 def logout():
     if app.secret_key:
         admin_session.clear()
-    access, refresh = request.cookies.get(ACCESS), request.cookies.get(REFRESH)
+    access, refresh = access_token(), request.cookies.get(REFRESH)
     if access and refresh:
         try:
             client = connect_db()

@@ -9,6 +9,7 @@ from itsdangerous import URLSafeTimedSerializer, BadSignature
 from supabase_auth.errors import AuthApiError
 
 try:
+    from .session_cookies import access_token
     from .image_uploader import upload_image, ImageUploadError
     from .store_settings import register_store_settings
     from .store_rules import register_store_rules
@@ -19,6 +20,7 @@ try:
     from .customer_applications import register_customer_applications
     from .store_team import resolve_store, register_store_team
 except ImportError:
+    from session_cookies import access_token
     from image_uploader import upload_image, ImageUploadError
     from store_settings import register_store_settings
     from store_rules import register_store_rules
@@ -50,7 +52,7 @@ def profile_for(user):
 
 def register_store_profile(app, connect_db, connect_admin, set_cookies):
     def owner(required_page=None):
-        token = request.cookies.get('adepa_access')
+        token = access_token()
         if not token:
             return None, (jsonify(error='Sign in to your store account.'), 401)
         client = connect_db()
